@@ -1,4 +1,6 @@
 # Northside — Loja Online
+#PROJETO EM CONCLUSÃO!!!
+
 
 Loja online completa em **PHP + MySQL**: catálogo de produtos, página de produto com stock, carrinho de compras (adicionar/remover/atualizar) e painel de administração para gerir os produtos.
 
@@ -19,7 +21,7 @@ Copia toda esta pasta `northside/` para a pasta pública do teu servidor:
 
 1. Abre o **phpMyAdmin** (ou outro gestor MySQL)
 2. Cria uma base de dados chamada `northside` (ou importa diretamente — o ficheiro já cria a base de dados)
-3. Importa o ficheiro `database/schema.sql`
+3. Importa o ficheiro `database/northside.sql`
    - Isto cria as tabelas `produtos`, `categorias`, `admins`
    - E insere as 5 categorias do menu + 6 produtos de exemplo (iguais aos da imagem que enviaste)
 
@@ -89,5 +91,3 @@ Sempre que alterares o campo **Stock**, isso reflete-se automaticamente:
 - Envio de emails de confirmação de encomenda
 - Sistema de contas de cliente (registo/login)
 - Página de "Finalizar compra" com moradas de envio
-
-Se quiseres, posso ajudar-te a adicionar qualquer uma destas partes a seguir.
