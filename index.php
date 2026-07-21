@@ -15,7 +15,7 @@ require __DIR__ . '/includes/header.php';
 
 <section class="hero">
     <h1>NORTHSIDE</h1>
-    <div class="slogan">WEAR YOU STORY</div>
+    <div class="slogan">WEAR YOUR STORY</div>
     <a href="loja.php" class="btn-northside">VER PRODUTOS</a>
 </section>
 
