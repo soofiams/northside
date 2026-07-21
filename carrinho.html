@@ -36,7 +36,7 @@
 
     <div class="nav-icons">
         <form action="loja.html" method="get" style="display:inline;">
-            <input type="text" name="pesquisa" placeholder="Pesquisar..." style="border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:0.8rem;">
+            <input type="text" name="pesquisa" placeholder="Pesquisar..." class="campo-pesquisa" style="border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:0.8rem;">
         </form>
         <a href="carrinho.html" title="Carrinho">
             🛒
@@ -48,6 +48,7 @@
 <h2 class="secao-titulo">O MEU CARRINHO</h2>
 
 <div style="padding: 0 30px;">
+    <div class="carrinho-scroll">
     <table class="carrinho-tabela">
         <thead>
             <tr>
@@ -95,6 +96,7 @@
             </tr>
         </tbody>
     </table>
+    </div>
 
     <div class="resumo-carrinho">
         <div class="linha"><span>Subtotal</span><span>39,98€</span></div>
@@ -104,24 +106,60 @@
     </div>
 </div>
 
-<footer class="rodape-northside">
-    <div class="bloco-rodape">
-        <img class="rodape-dragao" src="assets/img/fundo/dragao-esquerdo.png" alt="">
-        <div><strong>NASCIDO NO PORTO</strong>Inspirado na nossa cidade, feito para o mundo.</div>
+<footer class="site-footer">
+    <div class="footer-top">
+        <div class="footer-marca">
+            <a href="index.html" class="logo-northside">NORTHSIDE<small>WEAR YOU STORY</small></a>
+            <p>Loja de acessórios de tecnologia e casa, inspirada no Porto.</p>
+            <div class="footer-redes">
+                <a href="#" title="Instagram">📷</a>
+                <a href="#" title="Facebook">📘</a>
+                <a href="#" title="TikTok">🎵</a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <strong>Loja</strong>
+            <a href="loja.html">Todos os produtos</a>
+            <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
+            <a href="loja.html?categoria=casa">Casa</a>
+            <a href="loja.html?categoria=estilo">Estilo</a>
+        </div>
+        <div class="footer-col">
+            <strong>Apoio</strong>
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos e Condições</a>
+            <a href="#">Contactos</a>
+        </div>
+        <div class="footer-newsletter">
+            <strong>Poupa 10%</strong>
+            <p>Subscreve a newsletter e recebe o teu código de desconto.</p>
+            <a href="#" class="btn-northside" data-abrir-newsletter>SUBSCREVER</a>
+        </div>
     </div>
-    <div class="bloco-rodape">
-        <img class="rodape-dragao" src="assets/img/fundo/dragao-direito.png" alt="">
-        <div><strong>QUALIDADE GARANTIDA</strong>Produtos selecionados com os mais altos padrões.</div>
-    </div>
-    <div class="bloco-rodape">
-        <img class="rodape-dragao" src="assets/img/fundo/dragao-esquerdo.png" alt="">
-        <div><strong>PAGAMENTO SEGURO</strong>Métodos de pagamento 100% seguros.</div>
-    </div>
-    <div class="bloco-rodape">
-        <img class="rodape-dragao" src="assets/img/fundo/dragao-direito.png" alt="">
-        <div><strong>JUNTA-TE À NORTHSIDE</strong>Usa a tua história. Marca a nossa.</div>
+    <div class="footer-bottom">
+        <span>© 2026 Northside — Todos os direitos reservados.</span>
+        <div class="footer-links">
+            <a href="#">Política de Privacidade</a>
+            <a href="#">Termos e Condições</a>
+        </div>
     </div>
 </footer>
 
+<!-- Modal de newsletter -->
+<div class="modal-overlay" id="modal-newsletter">
+    <div class="modal-caixa">
+        <button class="fechar-modal" data-fechar-newsletter aria-label="Fechar">✕</button>
+        <div class="badge-desconto">-10% NA 1ª COMPRA</div>
+        <h3>Junta-te à Northside</h3>
+        <p>Subscreve a nossa newsletter e recebe já o teu código de desconto por email.</p>
+        <form class="form-newsletter-modal" id="form-newsletter-modal">
+            <input type="email" placeholder="O teu email" required>
+            <button type="submit" class="btn-northside">QUERO O DESCONTO</button>
+        </form>
+        <div class="modal-confirmacao" id="modal-confirmacao">✓ Verifica o teu email — o código está a caminho!</div>
+    </div>
+</div>
+
+<script src="assets/js/main.js"></script>
 </body>
 </html>
