@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Início — NORTHSIDE</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
@@ -29,11 +30,11 @@
         <ul class="nav-links">
             <li><a href="index.html" class="ativo">Início</a></li>
             <li><a href="loja.html">Loja</a></li>
-            <li><a href="loja.html?categoria=eletronicos">ELETRÓNICOS</a></li>
             <li><a href="loja.html?categoria=casa">CASA</a></li>
             <li><a href="loja.html?categoria=acessorios">ACESSÓRIOS</a></li>
             <li><a href="loja.html?categoria=estilo">ESTILO</a></li>
             <li><a href="loja.html?categoria=desporto">DESPORTO</a></li>
+            <li><a href="#avaliacoes">AVALIAÇÕES</a></li>
         </ul>
 
         <div class="nav-icons">
@@ -201,7 +202,7 @@
 
     </div>
 
-    <section class="avaliacoes-wrap">
+    <section class="avaliacoes-wrap" id="avaliacoes">
         <h2 class="secao-titulo" style="margin-top:0;">AVALIAÇÕES</h2>
         <div class="avaliacoes-grid">
             <div class="avaliacao-mini">
@@ -222,46 +223,47 @@
         </div>
     </section>
 
-
-    <footer class="site-footer">
-        <div class="footer-top">
-            <div class="footer-marca">
-                <a href="index.html" class="logo-northside">NORTHSIDE<small>WEAR YOUR STORY</small></a>
-                <p>Loja de acessórios de tecnologia e casa, inspirada no Porto.</p>
-                <div class="footer-redes">
-                    <a href="#" title="Instagram">📷</a>
-                    <a href="#" title="Facebook">📘</a>
-                    <a href="#" title="TikTok">🎵</a>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>NORTHSIDE</h2>
+                <p>Wear Your Story</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
-            <div class="footer-col">
-                <strong>Loja</strong>
-                <a href="loja.html">Todos os produtos</a>
-                <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
-                <a href="loja.html?categoria=casa">Casa</a>
-                <a href="loja.html?categoria=estilo">Estilo</a>
+            <div class="footer-links">
+                <h3>Loja</h3>
+                <a href="#">Eletrónicos</a>
+                <a href="#">Casa</a>
+                <a href="#">Lifestyle</a>
+                <a href="#">Desporto</a>
             </div>
-            <div class="footer-col">
-                <strong>Apoio</strong>
-                <a href="#">Política de Privacidade</a>
-                <a href="#">Termos e Condições</a>
+            <div class="footer-links">
+                <h3>Informações</h3>
+                <a href="#">Sobre Nós</a>
                 <a href="#">Contactos</a>
+                <a href="#">FAQ</a>
+                <a href="#">Envios</a>
             </div>
             <div class="footer-newsletter">
-                <strong>Poupa 10%</strong>
-                <p>Subscreve a newsletter e recebe o teu código de desconto.</p>
-                <a href="#" class="btn-northside" data-abrir-newsletter>SUBSCREVER</a>
+                <h3>Newsletter</h3>
+                <p>novidades e promoções exclusivas.
+                    <br>
+                    E ganha -10‰ na primeira compra
+                </p>
+                <form id="form-newsletter-footer">
+                    <button type="submit">Subscrever</button>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© 2026 Northside — Todos os direitos reservados.</span>
-            <div class="footer-links">
-                <a href="#">Política de Privacidade</a>
-                <a href="#">Termos e Condições</a>
-            </div>
+            <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
         </div>
     </footer>
-
     <!-- Modal de newsletter -->
     <div class="modal-overlay" id="modal-newsletter">
         <div class="modal-caixa">
@@ -277,7 +279,6 @@
             </div>
         </div>
     </div>
-
     <script src="assets/js/main.js"></script>
 </body>
 
