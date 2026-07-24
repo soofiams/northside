@@ -1,145 +1,197 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrinho — NORTHSIDE</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrinho — NORTHSIDE</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
-
 <body>
 
-    <div class="top-bar">
-        <div class="container-fluid">
-            <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE 50€</span>
-            <div>
-                <a href="#">Sobre Nós</a>
-                <a href="#">Ajuda</a>
-            </div>
+<div class="top-bar">
+    <div class="container-fluid">
+        <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE 50€</span>
+        <div>
+            <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
+            <a href="#">Ajuda</a>
         </div>
     </div>
+</div>
 
-    <div class="navbar-northside">
-        <a href="index.html" class="logo-northside">
-            NORTHSIDE
-            <small>WEAR YOUR STORY</small>
+<div class="navbar-northside">
+    <a href="index.html" class="logo-northside">
+        NORTHSIDE
+        <small>WEAR YOU STORY</small>
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="loja.html">Loja</a></li>
+        <li><a href="loja.html?categoria=eletronicos">ELETRÓNICOS</a></li>
+        <li><a href="loja.html?categoria=casa">CASA</a></li>
+        <li><a href="loja.html?categoria=acessorios">ACESSÓRIOS</a></li>
+        <li><a href="loja.html?categoria=estilo">ESTILO</a></li>
+        <li><a href="loja.html?categoria=desporto">DESPORTO</a></li>
+        <li><a href="avaliacoes.html">AVALIAÇÕES</a></li>
+    </ul>
+
+    <div class="nav-icons">
+        <form action="loja.html" method="get" style="display:inline;">
+            <input type="text" name="pesquisa" placeholder="Pesquisar..." class="campo-pesquisa" style="border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:0.8rem;">
+        </form>
+        <a href="carrinho.html" title="Carrinho">
+            🛒
+            <span class="cart-badge" style="display:none;">0</span>
         </a>
+    </div>
+</div>
 
-        <ul class="nav-links">
-            <li><a href="index.html">Início</a></li>
-            <li><a href="loja.html">Loja</a></li>
-            <li><a href="loja.html?categoria=eletronicos">ELETRÓNICOS</a></li>
-            <li><a href="loja.html?categoria=casa">CASA</a></li>
-            <li><a href="loja.html?categoria=acessorios">ACESSÓRIOS</a></li>
-            <li><a href="loja.html?categoria=estilo">ESTILO</a></li>
-            <li><a href="loja.html?categoria=desporto">DESPORTO</a></li>
-        </ul>
+<h2 class="secao-titulo">O MEU CARRINHO</h2>
 
-        <div class="nav-icons">
-            <form action="loja.html" method="get" style="display:inline;">
-                <input type="text" name="pesquisa" placeholder="Pesquisar..." class="campo-pesquisa"
-                    style="border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:0.8rem;">
+<div id="carrinho-vazio-estado" class="carrinho-vazio" style="display:none;">
+    O teu carrinho está vazio.<br><br>
+    <a href="loja.html" class="btn-northside">VER PRODUTOS</a>
+</div>
+
+<div style="padding: 0 30px;" id="carrinho-conteudo">
+    <div class="carrinho-scroll">
+    <table class="carrinho-tabela">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="corpo-carrinho">
+            <!-- preenchido por JavaScript (assets/js/main.js) -->
+        </tbody>
+    </table>
+    </div>
+
+    <div class="resumo-carrinho">
+        <div class="linha"><span>Subtotal</span><span id="carrinho-subtotal">0,00€</span></div>
+        <div class="linha"><span>Envio</span><span id="carrinho-envio">0,00€</span></div>
+        <div class="linha total"><span>Total</span><span id="carrinho-total">0,00€</span></div>
+        <button class="btn-northside" id="btn-finalizar-compra" style="width:100%;margin-top:16px;">FINALIZAR COMPRA</button>
+    </div>
+</div>
+
+
+<div class="barra-pagamentos">
+    <span class="pagamentos-label">Métodos de pagamento disponíveis</span>
+    <div class="pagamentos-badges">
+        <span class="metodo-pagamento metodo-mbway">MB WAY</span>
+        <span class="metodo-pagamento metodo-klarna">Klarna</span>
+        <span class="metodo-pagamento metodo-icone"><i class="fab fa-apple-pay"></i></span>
+        <span class="metodo-pagamento metodo-icone"><i class="fab fa-google-pay"></i></span>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <h2>NORTHSIDE</h2>
+            <p>Wear Your Story</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Loja</h3>
+            <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
+            <a href="loja.html?categoria=casa">Casa</a>
+            <a href="loja.html?categoria=estilo">Estilo</a>
+            <a href="loja.html?categoria=desporto">Desporto</a>
+        </div>
+        <div class="footer-links">
+            <h3>Informações</h3>
+            <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
+            <a href="#">Contactos</a>
+            <a href="#">FAQ</a>
+            <a href="#">Envios</a>
+        </div>
+        <div class="footer-newsletter">
+            <h3>Newsletter</h3>
+            <p>Novidades e promoções exclusivas.<br>E ganha -10% na primeira compra.</p>
+            <form id="form-newsletter-footer">
+                <button type="submit">Subscrever</button>
             </form>
-            <a href="carrinho.html" title="Carrinho">
-                🛒
-                <span class="cart-badge" style="display:none;">0</span>
-            </a>
         </div>
     </div>
-
-    <h2 class="secao-titulo">O MEU CARRINHO</h2>
-
-    <div id="carrinho-vazio-estado" class="carrinho-vazio" style="display:none;">
-        O teu carrinho está vazio.<br><br>
-        <a href="loja.html" class="btn-northside">VER PRODUTOS</a>
+    <div class="footer-bottom">
+        <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
     </div>
+</footer>
 
-    <div style="padding: 0 30px;" id="carrinho-conteudo">
-        <div class="carrinho-scroll">
-            <table class="carrinho-tabela">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Preço</th>
-                        <th>Quantidade</th>
-                        <th>Subtotal</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-carrinho">
-                    <!-- preenchido por JavaScript (assets/js/main.js) -->
-                </tbody>
-            </table>
-        </div>
-
-        <div class="resumo-carrinho">
-            <div class="linha"><span>Subtotal</span><span id="carrinho-subtotal">0,00€</span></div>
-            <div class="linha"><span>Envio</span><span id="carrinho-envio">0,00€</span></div>
-            <div class="linha total"><span>Total</span><span id="carrinho-total">0,00€</span></div>
-            <button class="btn-northside" style="width:100%;margin-top:16px;">FINALIZAR COMPRA</button>
-        </div>
+<!-- Modal de newsletter -->
+<div class="modal-overlay" id="modal-newsletter">
+    <div class="modal-caixa">
+        <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
+        <div class="badge-desconto">-10% NA 1ª COMPRA</div>
+        <h3>Junta-te à Northside</h3>
+        <p>Subscreve a nossa newsletter e recebe já o teu código de desconto por email.</p>
+        <form class="form-newsletter-modal" id="form-newsletter-modal">
+            <input type="email" placeholder="O teu email" required>
+            <button type="submit" class="btn-northside">QUERO O DESCONTO</button>
+        </form>
+        <div class="modal-confirmacao" id="modal-confirmacao">✓ Verifica o teu email — o código está a caminho!</div>
     </div>
+</div>
 
-
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-brand">
-                <h2>NORTHSIDE</h2>
-                <p>Wear Your Story</p>
-                <div class="footer-social">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-links">
-                <h3>Loja</h3>
-                <a href="#">Eletrónicos</a>
-                <a href="#">Casa</a>
-                <a href="#">Lifestyle</a>
-                <a href="#">Desporto</a>
-            </div>
-            <div class="footer-links">
-                <h3>Informações</h3>
-                <a href="#">Sobre Nós</a>
-                <a href="#">Contactos</a>
-                <a href="#">FAQ</a>
-                <a href="#">Envios</a>
-            </div>
-            <div class="footer-newsletter">
-                <h3>Newsletter</h3>
-                <p>novidades e promoções exclusivas.
-                    <br>
-                    E ganha -10‰ na primeira compra
-                </p>
-                <form id="form-newsletter-footer">
-                    <button type="submit">Subscrever</button>
-                </form>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
-        </div>
-    </footer>
-    <!-- Modal de newsletter -->
-    <div class="modal-overlay" id="modal-newsletter">
-        <div class="modal-caixa">
-            <button class="fechar-modal" data-fechar-newsletter aria-label="Fechar">✕</button>
-            <div class="badge-desconto">-10% NA 1ª COMPRA</div>
-            <h3>Junta-te à Northside</h3>
-            <p>Subscreve a nossa newsletter e recebe já o teu código de desconto por email.</p>
-            <form class="form-newsletter-modal" id="form-newsletter-modal">
-                <input type="email" placeholder="O teu email" required>
-                <button type="submit" class="btn-northside">QUERO O DESCONTO</button>
-            </form>
-            <div class="modal-confirmacao" id="modal-confirmacao">✓ Verifica o teu email — o código está a caminho!
-            </div>
-        </div>
+<!-- Modal Sobre Nós -->
+<div class="modal-overlay" id="modal-sobre">
+    <div class="modal-caixa">
+        <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
+        <h3>Sobre a Northside</h3>
+        <p style="margin-bottom:10px;">A Northside nasceu em 2026, no coração do Porto.</p>
+        <p style="margin-bottom:10px;">Foi criada por duas pessoas apaixonadas pela cidade e pela sua história.</p>
+        <p style="margin-bottom:0;">Uma marca portuguesa, pensada para chegar ao mundo inteiro.</p>
     </div>
-    <script src="assets/js/main.js"></script>
+</div>
+
+<!-- Modal de checkout (finalizar compra) -->
+<div class="modal-overlay" id="modal-checkout">
+    <div class="modal-caixa modal-checkout-caixa">
+        <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
+        <h3>Finalizar Compra</h3>
+
+        <form id="form-checkout" class="checkout-form">
+            <label for="checkout-nome">Nome completo</label>
+            <input type="text" id="checkout-nome" required>
+
+            <label for="checkout-morada">Morada de entrega</label>
+            <input type="text" id="checkout-morada" required>
+
+            <label for="checkout-telemovel">Número de telemóvel</label>
+            <input type="tel" id="checkout-telemovel" required>
+
+            <div class="checkout-resumo" id="checkout-resumo">
+                <!-- preenchido por JavaScript com os produtos do carrinho -->
+            </div>
+
+            <label>Método de pagamento</label>
+            <div class="checkout-pagamento-opcoes">
+                <label><input type="radio" name="pagamento" value="MB WAY" checked> MB WAY</label>
+                <label><input type="radio" name="pagamento" value="Klarna"> Klarna</label>
+                <label><input type="radio" name="pagamento" value="Apple Pay"> Apple Pay</label>
+                <label><input type="radio" name="pagamento" value="Google Pay"> Google Pay</label>
+            </div>
+
+            <button type="submit" class="btn-northside" style="width:100%;margin-top:20px;">CONFIRMAR ENCOMENDA</button>
+        </form>
+
+        <div class="modal-confirmacao" id="checkout-confirmacao">✓ Encomenda confirmada!<br>Obrigado pela tua compra — vais receber um email de confirmação.</div>
+    </div>
+</div>
+
+
+<script src="assets/js/main.js"></script>
 </body>
-
 </html>

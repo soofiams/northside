@@ -184,6 +184,13 @@ a { text-decoration: none; color: inherit; }
     gap: 22px;
     padding: 0 30px 50px;
 }
+.grid-relacionados {
+    grid-template-columns: repeat(3, minmax(0, 260px));
+    max-width: 900px;
+    margin: 0 auto;
+    justify-content: center;
+    padding: 0 30px 60px;
+}
 .cartao-produto {
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -314,16 +321,17 @@ a { text-decoration: none; color: inherit; }
 .carrinho-vazio { text-align: center; padding: 80px 20px; color: var(--cinza-texto); }
 
 /* ===== Rodapé antigo (mantido para compatibilidade com páginas ainda não atualizadas) ===== */
+/* ===== Divisória de métodos de pagamento (antes do rodapé) ===== */
 .barra-pagamentos {
     background: var(--cinza-claro);
     border-top: 1px solid var(--border);
-    padding: 18px 30px;
+    padding: 22px 30px;
     margin-top: 50px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 14px;
+    gap: 16px;
     text-align: center;
 }
 .barra-pagamentos .pagamentos-label {
@@ -331,16 +339,40 @@ a { text-decoration: none; color: inherit; }
     font-weight: 700;
     color: var(--azul-northside);
 }
-.pagamentos-badges { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.pagamentos-badges span {
+.pagamentos-badges { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; }
+.metodo-pagamento {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 800;
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 4px 10px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--cinza-texto);
-    background: #fff;
 }
+.metodo-mbway { background: #d9006c; color: #fff; }
+.metodo-klarna { background: #ffb3c7; color: #17120f; }
+.metodo-icone { background: #fff; font-size: 1.3rem; color: #1a1a1a; width: 52px; padding: 0; }
+.metodo-icone .fa-apple-pay { color: #000; }
+.metodo-icone .fa-google-pay { color: #1a1a1a; }
+
+/* ===== Resumo de avaliações (avaliacoes.html) ===== */
+.resumo-avaliacoes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 0 20px 30px;
+    text-align: left;
+}
+.resumo-nota {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--azul-northside);
+    line-height: 1;
+}
+.resumo-avaliacoes p { margin: 4px 0 0; color: var(--cinza-texto); font-size: 0.85rem; }
 footer.rodape-simples {
     background: var(--azul-northside);
     color: #c7cee6;
@@ -379,7 +411,7 @@ footer.rodape-simples {
 ==========================*/
 
 .footer {
-    margin-top: 80px;
+    margin-top: 0;
     background: var(--azul-northside);
     color: #fff;
 }
@@ -471,7 +503,8 @@ footer.rodape-simples {
     padding: 14px 24px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 0 8px 8px 0;
+    border-radius: 8px;
+    width: 100%;
     transition: .3s;
 }
 
@@ -521,6 +554,77 @@ footer.rodape-simples {
     padding: 12px 14px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.9rem;
 }
 .modal-confirmacao { display: none; color: #1a7f43; font-weight: 700; font-size: 0.9rem; margin-top: 10px; }
+
+/* ===== Modal de checkout (finalizar compra) ===== */
+.modal-checkout-caixa {
+    max-width: 480px;
+    text-align: left;
+    max-height: 88vh;
+    overflow-y: auto;
+}
+.modal-checkout-caixa h3 { text-align: center; }
+.checkout-form label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--azul-northside);
+    margin: 14px 0 6px;
+}
+.checkout-form input[type="text"],
+.checkout-form input[type="tel"] {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+.checkout-resumo {
+    background: var(--cinza-claro);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 18px;
+    font-size: 0.85rem;
+}
+.checkout-resumo .linha-produto {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    color: var(--cinza-texto);
+}
+.checkout-resumo .linha-total {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+    padding-top: 8px;
+    font-weight: 800;
+    color: var(--azul-northside);
+}
+.checkout-pagamento-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.checkout-pagamento-opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--cinza-texto);
+    cursor: pointer;
+    margin: 0;
+}
+.checkout-pagamento-opcoes input { accent-color: var(--azul-northside); }
+.checkout-pagamento-opcoes label:has(input:checked) {
+    border-color: var(--azul-northside);
+    color: var(--azul-northside);
+    background: var(--cinza-claro);
+}
+#checkout-confirmacao { text-align: center; }
 
 /* ===== Alertas ===== */
 .alerta {
@@ -599,6 +703,7 @@ footer.rodape-simples {
     .vantagens { flex-direction: column; align-items: flex-start; padding: 20px 24px; }
 
     .grid-produtos { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 14px 30px; }
+    .grid-relacionados { grid-template-columns: 1fr; max-width: 320px; padding: 0 14px 30px; }
     .cartao-produto:hover { transform: none; box-shadow: none; }
     .cartao-produto h3 { font-size: 0.82rem; }
     .preco { font-size: 0.92rem; }
