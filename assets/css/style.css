@@ -106,8 +106,8 @@ a { text-decoration: none; color: inherit; }
     aspect-ratio: 1536 / 740;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    text-align: left;
+    justify-content: center;
+    text-align: center;
     padding: 20px 8%;
 }
 .hero-texto { max-width: 480px; }

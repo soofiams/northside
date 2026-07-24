@@ -1,242 +1,142 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loja — NORTHSIDE</title>
-<link rel="stylesheet" href="assets/css/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja — NORTHSIDE</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
 <body>
-
-<div class="top-bar">
-    <div class="container-fluid">
-        <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE 50€</span>
-        <div>
-            <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
-            <a href="#">Ajuda</a>
+    <div class="top-bar">
+        <div class="container-fluid">
+            <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE 50€</span>
+            <div>
+                <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
+                <a href="#">Ajuda</a>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="navbar-northside">
-    <a href="index.html" class="logo-northside">
-        NORTHSIDE
-        <small>WEAR YOU STORY</small>
-    </a>
-
-    <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="loja.html" class="ativo">Loja</a></li>
-        <li><a href="loja.html?categoria=eletronicos">ELETRÓNICOS</a></li>
-        <li><a href="loja.html?categoria=casa">CASA</a></li>
-        <li><a href="loja.html?categoria=acessorios">ACESSÓRIOS</a></li>
-        <li><a href="loja.html?categoria=estilo">ESTILO</a></li>
-        <li><a href="loja.html?categoria=desporto">DESPORTO</a></li>
-        <li><a href="avaliacoes.html">AVALIAÇÕES</a></li>
-    </ul>
-
-    <div class="nav-icons">
-        <form action="loja.html" method="get" style="display:inline;">
-            <input type="text" name="pesquisa" placeholder="Pesquisar..." class="campo-pesquisa" style="border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:0.8rem;">
-        </form>
-        <a href="carrinho.html" title="Carrinho">
-            🛒
-            <span class="cart-badge" style="display:none;">0</span>
+    <div class="navbar-northside">
+        <a href="index.html" class="logo-northside">
+            NORTHSIDE
+            <small>WEAR YOUR STORY</small>
         </a>
-    </div>
-</div>
 
-<h2 class="secao-titulo">TODOS OS PRODUTOS</h2>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="loja.html" class="ativo">Loja</a></li>
+            <li><a href="loja.html?categoria=eletronicos">ELETRÓNICOS</a></li>
+            <li><a href="loja.html?categoria=casa">CASA</a></li>
+            <li><a href="loja.html?categoria=acessorios">ACESSÓRIOS</a></li>
+            <li><a href="loja.html?categoria=estilo">ESTILO</a></li>
+            <li><a href="loja.html?categoria=desporto">DESPORTO</a></li>
+            <li><a href="avaliacoes.html">AVALIAÇÕES</a></li>
+        </ul>
 
-<div class="grid-produtos">
-
-    <div class="cartao-produto">
-        <a href="produto.html?id=1">
-            <div class="img-wrap">
-                <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Auriculares Sem Fios Pro">
-                <img src="assets/img/produtos/sem-imagem.jpg" alt="Auriculares Sem Fios Pro, vista 2">
-            </div>
-        </a>
-        <div class="corpo">
-            <div class="categoria-label">ELETRÓNICOS</div>
-            <a href="produto.html?id=1"><h3>Auriculares Sem Fios Pro</h3></a>
-            <div class="estrelas">★★★★★ <span class="num">(128)</span></div>
-            <div class="linha-preco">
-                <span class="preco">24,99€</span>
-                <button class="btn-add-cart" onclick="adicionarAoCarrinho(1)">+</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="cartao-produto">
-        <a href="produto.html?id=2">
-            <div class="img-wrap">
-                <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Smartwatch X1">
-                <img src="assets/img/produtos/sem-imagem.jpg" alt="Smartwatch X1, vista 2">
-            </div>
-        </a>
-        <div class="corpo">
-            <div class="categoria-label">ELETRÓNICOS</div>
-            <a href="produto.html?id=2"><h3>Smartwatch X1</h3></a>
-            <div class="estrelas">★★★★☆ <span class="num">(96)</span></div>
-            <div class="linha-preco">
-                <span class="preco">34,99€</span>
-                <button class="btn-add-cart" onclick="adicionarAoCarrinho(2)">+</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="cartao-produto">
-        <a href="produto.html?id=3">
-            <div class="img-wrap">
-                <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Fita LED RGB 5M">
-                <img src="assets/img/produtos/sem-imagem.jpg" alt="Fita LED RGB 5M, vista 2">
-            </div>
-        </a>
-        <div class="corpo">
-            <div class="categoria-label">CASA</div>
-            <a href="produto.html?id=3"><h3>Fita LED RGB 5M</h3></a>
-            <div class="estrelas">★★★★☆ <span class="num">(73)</span></div>
-            <div class="linha-preco">
-                <span class="preco">16,99€</span>
-                <span class="rotulo-esgotado">ESGOTADO</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="cartao-produto">
-        <a href="produto.html?id=4">
-            <div class="img-wrap">
-                <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Power Bank 20.000mAh">
-                <img src="assets/img/produtos/sem-imagem.jpg" alt="Power Bank 20.000mAh, vista 2">
-            </div>
-        </a>
-        <div class="corpo">
-            <div class="categoria-label">ELETRÓNICOS</div>
-            <a href="produto.html?id=4"><h3>Power Bank 20.000mAh</h3></a>
-            <div class="estrelas">★★★★★ <span class="num">(112)</span></div>
-            <div class="linha-preco">
-                <span class="preco">29,99€</span>
-                <button class="btn-add-cart" onclick="adicionarAoCarrinho(4)">+</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="cartao-produto">
-        <a href="produto.html?id=5">
-            <div class="img-wrap">
-                <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Garrafa Térmica 1L">
-                <img src="assets/img/produtos/sem-imagem.jpg" alt="Garrafa Térmica 1L, vista 2">
-            </div>
-        </a>
-        <div class="corpo">
-            <div class="categoria-label">ESTILO</div>
-            <a href="produto.html?id=5"><h3>Garrafa Térmica 1L</h3></a>
-            <div class="estrelas">★★★★★ <span class="num">(58)</span></div>
-            <div class="linha-preco">
-                <span class="preco">19,99€</span>
-                <button class="btn-add-cart" onclick="adicionarAoCarrinho(5)">+</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="cartao-produto">
-        <a href="produto.html?id=6">
-            <div class="img-wrap">
-                <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Boné Northside">
-                <img src="assets/img/produtos/sem-imagem.jpg" alt="Boné Northside, vista 2">
-            </div>
-        </a>
-        <div class="corpo">
-            <div class="categoria-label">ESTILO</div>
-            <a href="produto.html?id=6"><h3>Boné Northside</h3></a>
-            <div class="estrelas">★★★★☆ <span class="num">(42)</span></div>
-            <div class="linha-preco">
-                <span class="preco">14,99€</span>
-                <button class="btn-add-cart" onclick="adicionarAoCarrinho(6)">+</button>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="barra-pagamentos">
-    <span class="pagamentos-label">Métodos de pagamento disponíveis</span>
-    <div class="pagamentos-badges">
-        <span class="metodo-pagamento metodo-mbway">MB WAY</span>
-        <span class="metodo-pagamento metodo-klarna">Klarna</span>
-        <span class="metodo-pagamento metodo-icone"><i class="fab fa-apple-pay"></i></span>
-        <span class="metodo-pagamento metodo-icone"><i class="fab fa-google-pay"></i></span>
-    </div>
-</div>
-
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-brand">
-            <h2>NORTHSIDE</h2>
-            <p>Wear Your Story</p>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-        </div>
-        <div class="footer-links">
-            <h3>Loja</h3>
-            <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
-            <a href="loja.html?categoria=casa">Casa</a>
-            <a href="loja.html?categoria=estilo">Estilo</a>
-            <a href="loja.html?categoria=desporto">Desporto</a>
-        </div>
-        <div class="footer-links">
-            <h3>Informações</h3>
-            <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
-            <a href="#">Contactos</a>
-            <a href="#">FAQ</a>
-            <a href="#">Envios</a>
-        </div>
-        <div class="footer-newsletter">
-            <h3>Newsletter</h3>
-            <p>Novidades e promoções exclusivas.<br>E ganha -10% na primeira compra.</p>
-            <form id="form-newsletter-footer">
-                <button type="submit">Subscrever</button>
+        <div class="nav-icons">
+            <form action="loja.html" method="get" style="display:inline;">
+                <input type="text" name="pesquisa" placeholder="Pesquisar..." class="campo-pesquisa"
+                    style="border:1px solid #e5e7eb;border-radius:4px;padding:6px 10px;font-size:0.8rem;">
             </form>
+            <a href="carrinho.html" title="Carrinho">
+                🛒
+                <span class="cart-badge" style="display:none;">0</span>
+            </a>
         </div>
     </div>
-    <div class="footer-bottom">
-        <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
+
+    <h2 class="secao-titulo" id="titulo-loja">TODOS OS PRODUTOS</h2>
+
+    <div class="carrinho-vazio" id="loja-sem-resultados" style="display:none;">
+        Não encontrámos produtos que correspondam à tua pesquisa.<br><br>
+        <a href="loja.html" class="btn-northside">VER TODOS OS PRODUTOS</a>
     </div>
-</footer>
 
-<!-- Modal de newsletter -->
-<div class="modal-overlay" id="modal-newsletter">
-    <div class="modal-caixa">
-        <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
-        <div class="badge-desconto">-10% NA 1ª COMPRA</div>
-        <h3>Junta-te à Northside</h3>
-        <p>Subscreve a nossa newsletter e recebe já o teu código de desconto por email.</p>
-        <form class="form-newsletter-modal" id="form-newsletter-modal">
-            <input type="email" placeholder="O teu email" required>
-            <button type="submit" class="btn-northside">QUERO O DESCONTO</button>
-        </form>
-        <div class="modal-confirmacao" id="modal-confirmacao">✓ Verifica o teu email — o código está a caminho!</div>
+    <div class="grid-produtos" id="grid-loja">
     </div>
-</div>
 
-<!-- Modal Sobre Nós -->
-<div class="modal-overlay" id="modal-sobre">
-    <div class="modal-caixa">
-        <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
-        <h3>Sobre a Northside</h3>
-        <p style="margin-bottom:10px;">A Northside nasceu em 2026, no coração do Porto.</p>
-        <p style="margin-bottom:10px;">Foi criada por duas pessoas apaixonadas pela cidade e pela sua história.</p>
-        <p style="margin-bottom:0;">Uma marca portuguesa, pensada para chegar ao mundo inteiro.</p>
+    <div class="barra-pagamentos">
+        <span class="pagamentos-label">Métodos de pagamento disponíveis</span>
+        <div class="pagamentos-badges">
+            <span class="metodo-pagamento metodo-mbway">MB WAY</span>
+            <span class="metodo-pagamento metodo-klarna">Klarna</span>
+            <span class="metodo-pagamento metodo-icone"><i class="fab fa-apple-pay"></i></span>
+            <span class="metodo-pagamento metodo-icone"><i class="fab fa-google-pay"></i></span>
+        </div>
     </div>
-</div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>NORTHSIDE</h2>
+                <p>Wear Your Story</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Loja</h3>
+                <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
+                <a href="loja.html?categoria=casa">Casa</a>
+                <a href="loja.html?categoria=estilo">Estilo</a>
+                <a href="loja.html?categoria=desporto">Desporto</a>
+            </div>
+            <div class="footer-links">
+                <h3>Informações</h3>
+                <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
+                <a href="#">Contactos</a>
+                <a href="#">FAQ</a>
+                <a href="#">Envios</a>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Newsletter</h3>
+                <p>Novidades e promoções exclusivas.<br>E ganha -10% na primeira compra.</p>
+                <form id="form-newsletter-footer">
+                    <button type="submit">Subscrever</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
+        </div>
+    </footer>
+
+    <!-- Modal de newsletter -->
+    <div class="modal-overlay" id="modal-newsletter">
+        <div class="modal-caixa">
+            <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
+            <div class="badge-desconto">-10% NA 1ª COMPRA</div>
+            <h3>Junta-te à Northside</h3>
+            <p>Subscreve a nossa newsletter e recebe já o teu código de desconto por email.</p>
+            <form class="form-newsletter-modal" id="form-newsletter-modal">
+                <input type="email" placeholder="O teu email" required>
+                <button type="submit" class="btn-northside">QUERO O DESCONTO</button>
+            </form>
+            <div class="modal-confirmacao" id="modal-confirmacao">✓ Verifica o teu email — o código está a caminho!
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Sobre Nós -->
+    <div class="modal-overlay" id="modal-sobre">
+        <div class="modal-caixa">
+            <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
+            <h3>Sobre a Northside</h3>
+            <p style="margin-bottom:10px;">A Northside nasceu em 2026, no coração do Porto.</p>
+            <p style="margin-bottom:10px;">Foi criada por duas pessoas apaixonadas pela cidade e pela sua história.</p>
+            <p style="margin-bottom:0;">Uma marca portuguesa, pensada para chegar ao mundo inteiro.</p>
+        </div>
+    </div>
 
 
-<script src="assets/js/main.js"></script>
+    <script src="assets/js/main.js"></script>
 </body>
+
 </html>

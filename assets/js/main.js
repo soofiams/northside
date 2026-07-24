@@ -73,7 +73,7 @@ const PRODUTOS = {
         preco: 19.99,
         imagem: 'assets/img/produtos/sem-imagem.jpg',
         stock: 12,
-        categoria: 'ESTILO',
+        categoria: 'ACESSÓRIOS',
         estrelas: '★★★★★',
         avaliacoes: 58,
         descricao: 'Garrafa térmica em aço inoxidável, mantém a temperatura até 12 horas.',
@@ -116,12 +116,69 @@ const PRODUTOS = {
             'Autonomia': 'Até 30h com ANC ativo'
         }
     },
+    8: {
+        nome: 'Hoodie Northside',
+        preco: 39.99,
+        imagem: 'assets/img/produtos/sem-imagem.jpg',
+        stock: 18,
+        categoria: 'ESTILO',
+        estrelas: '★★★★★',
+        avaliacoes: 37,
+        descricao: 'Hoodie unissexo em algodão pesado, com o logótipo Northside bordado no peito.',
+        especificacoes: {
+            'Garantia': 'Trocas até 30 dias',
+            'Material': '80% algodão, 20% poliéster',
+            'Tamanhos disponíveis': 'XS a XXL',
+            'Origem': 'Desenhado no Porto'
+        }
+    },
+    9: {
+        nome: 'Camisola Northside',
+        preco: 29.99,
+        imagem: 'assets/img/produtos/sem-imagem.jpg',
+        stock: 22,
+        categoria: 'ESTILO',
+        estrelas: '★★★★☆',
+        avaliacoes: 25,
+        descricao: 'Camisola de malha leve, corte unissexo, com o logótipo Northside bordado.',
+        especificacoes: {
+            'Garantia': 'Trocas até 30 dias',
+            'Material': '100% algodão',
+            'Tamanhos disponíveis': 'XS a XXL',
+            'Origem': 'Desenhado no Porto'
+        }
+    },
+    10: {
+        nome: 'T-shirt Northside',
+        preco: 19.99,
+        imagem: 'assets/img/produtos/sem-imagem.jpg',
+        stock: 40,
+        categoria: 'ESTILO',
+        estrelas: '★★★★★',
+        avaliacoes: 51,
+        descricao: 'T-shirt básica em algodão, com o logótipo Northside estampado.',
+        especificacoes: {
+            'Garantia': 'Trocas até 30 dias',
+            'Material': '100% algodão',
+            'Tamanhos disponíveis': 'XS a XXL',
+            'Origem': 'Desenhado no Porto'
+        }
+    },
 };
 
 const CHAVE_CARRINHO = 'northside_carrinho';
 
 function formatarPreco(valor) {
     return valor.toFixed(2).replace('.', ',') + '€';
+}
+
+// Remove acentos e baixa para minúsculas, para comparar texto de forma tolerante
+function normalizarTexto(txt) {
+    return (txt || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
 }
 
 // ---- Leitura e escrita do carrinho (guardado no localStorage do browser) ----
@@ -280,6 +337,59 @@ function construirCartaoProduto(id) {
     '</div>';
 }
 
+// ---- Renderizar a loja (só corre em loja.html), filtrando por categoria e/ou pesquisa ----
+const LABELS_CATEGORIA = {
+    eletronicos: 'ELETRÓNICOS',
+    casa: 'CASA',
+    acessorios: 'ACESSÓRIOS',
+    estilo: 'ESTILO',
+    desporto: 'DESPORTO'
+};
+
+function renderizarLoja() {
+    const grid = document.getElementById('grid-loja');
+    if (!grid) return; // não estamos na página da loja
+
+    const params = new URLSearchParams(window.location.search);
+    const categoriaSlug = params.get('categoria');
+    const pesquisa = params.get('pesquisa') || '';
+    const pesquisaNormalizada = normalizarTexto(pesquisa);
+
+    // manter o texto pesquisado visível no campo de pesquisa
+    const campoPesquisa = document.querySelector('.campo-pesquisa');
+    if (campoPesquisa && pesquisa) campoPesquisa.value = pesquisa;
+
+    const idsFiltrados = Object.keys(PRODUTOS).filter(function (id) {
+        const p = PRODUTOS[id];
+        const okCategoria = !categoriaSlug || normalizarTexto(p.categoria) === normalizarTexto(categoriaSlug);
+        const okPesquisa = !pesquisaNormalizada || normalizarTexto(p.nome).includes(pesquisaNormalizada);
+        return okCategoria && okPesquisa;
+    });
+
+    // título da secção, consoante o filtro ativo
+    const titulo = document.getElementById('titulo-loja');
+    if (titulo) {
+        if (pesquisa) {
+            titulo.textContent = 'RESULTADOS PARA "' + pesquisa.toUpperCase() + '"';
+        } else if (categoriaSlug) {
+            titulo.textContent = LABELS_CATEGORIA[normalizarTexto(categoriaSlug)] || categoriaSlug.toUpperCase();
+        } else {
+            titulo.textContent = 'TODOS OS PRODUTOS';
+        }
+    }
+
+    const semResultados = document.getElementById('loja-sem-resultados');
+    if (idsFiltrados.length === 0) {
+        grid.style.display = 'none';
+        if (semResultados) semResultados.style.display = 'block';
+    } else {
+        grid.style.display = '';
+        if (semResultados) semResultados.style.display = 'none';
+        grid.innerHTML = idsFiltrados.map(construirCartaoProduto).join('');
+    }
+}
+
+
 // ---- Renderizar a página de produto (só corre em produto.html) ----
 function renderizarProduto() {
     const elNome = document.getElementById('produto-nome');
@@ -367,6 +477,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ---- Renderizar a página de produto, se estivermos nela ----
     renderizarProduto();
+
+    // ---- Renderizar a loja (com filtro de categoria/pesquisa), se estivermos nela ----
+    renderizarLoja();
 
     // ---- Formulário principal da página de produto (com quantidade) ----
     const formProduto = document.getElementById('form-produto-principal');

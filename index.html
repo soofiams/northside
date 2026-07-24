@@ -168,7 +168,7 @@
                 </div>
             </a>
             <div class="corpo">
-                <div class="categoria-label">ESTILO</div>
+                <div class="categoria-label">ACESSÓRIOS</div>
                 <a href="produto.html?id=5">
                     <h3>Garrafa Térmica 1L</h3>
                 </a>
@@ -196,6 +196,26 @@
                 <div class="linha-preco">
                     <span class="preco">14,99€</span>
                     <button class="btn-add-cart" onclick="adicionarAoCarrinho(6)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="cartao-produto">
+            <a href="produto.html?id=8">
+                <div class="img-wrap">
+                    <img class="img-ativa" src="assets/img/produtos/sem-imagem.jpg" alt="Hoodie Northside">
+                    <img src="assets/img/produtos/sem-imagem.jpg" alt="Hoodie Northside, vista 2">
+                </div>
+            </a>
+            <div class="corpo">
+                <div class="categoria-label">ESTILO</div>
+                <a href="produto.html?id=8">
+                    <h3>Hoodie Northside</h3>
+                </a>
+                <div class="estrelas">★★★★★ <span class="num">(37)</span></div>
+                <div class="linha-preco">
+                    <span class="preco">39,99€</span>
+                    <button class="btn-add-cart" onclick="adicionarAoCarrinho(8)">+</button>
                 </div>
             </div>
         </div>
@@ -228,53 +248,53 @@
 
 
     <div class="barra-pagamentos">
-    <span class="pagamentos-label">Métodos de pagamento disponíveis</span>
-    <div class="pagamentos-badges">
-        <span class="metodo-pagamento metodo-mbway">MB WAY</span>
-        <span class="metodo-pagamento metodo-klarna">Klarna</span>
-        <span class="metodo-pagamento metodo-icone"><i class="fab fa-apple-pay"></i></span>
-        <span class="metodo-pagamento metodo-icone"><i class="fab fa-google-pay"></i></span>
+        <span class="pagamentos-label">Métodos de pagamento disponíveis</span>
+        <div class="pagamentos-badges">
+            <span class="metodo-pagamento metodo-mbway">MB WAY</span>
+            <span class="metodo-pagamento metodo-klarna">Klarna</span>
+            <span class="metodo-pagamento metodo-icone"><i class="fab fa-apple-pay"></i></span>
+            <span class="metodo-pagamento metodo-icone"><i class="fab fa-google-pay"></i></span>
+        </div>
     </div>
-</div>
 
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-brand">
-            <h2>NORTHSIDE</h2>
-            <p>Wear Your Story</p>
-            <div class="footer-social">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h2>NORTHSIDE</h2>
+                <p>Wear Your Story</p>
+                <div class="footer-social">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Loja</h3>
+                <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
+                <a href="loja.html?categoria=casa">Casa</a>
+                <a href="loja.html?categoria=estilo">Estilo</a>
+                <a href="loja.html?categoria=desporto">Desporto</a>
+            </div>
+            <div class="footer-links">
+                <h3>Informações</h3>
+                <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
+                <a href="#">Contactos</a>
+                <a href="#">FAQ</a>
+                <a href="#">Envios</a>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Newsletter</h3>
+                <p>Novidades e promoções exclusivas.<br>E ganha -10% na primeira compra.</p>
+                <form id="form-newsletter-footer">
+                    <button type="submit">Subscrever</button>
+                </form>
             </div>
         </div>
-        <div class="footer-links">
-            <h3>Loja</h3>
-            <a href="loja.html?categoria=eletronicos">Eletrónicos</a>
-            <a href="loja.html?categoria=casa">Casa</a>
-            <a href="loja.html?categoria=estilo">Estilo</a>
-            <a href="loja.html?categoria=desporto">Desporto</a>
+        <div class="footer-bottom">
+            <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
         </div>
-        <div class="footer-links">
-            <h3>Informações</h3>
-            <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
-            <a href="#">Contactos</a>
-            <a href="#">FAQ</a>
-            <a href="#">Envios</a>
-        </div>
-        <div class="footer-newsletter">
-            <h3>Newsletter</h3>
-            <p>Novidades e promoções exclusivas.<br>E ganha -10% na primeira compra.</p>
-            <form id="form-newsletter-footer">
-                <button type="submit">Subscrever</button>
-            </form>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <span>© 2026 NORTHSIDE • Todos os direitos reservados.</span>
-    </div>
-</footer>
+    </footer>
     <!-- Modal de newsletter -->
     <div class="modal-overlay" id="modal-newsletter">
         <div class="modal-caixa">
@@ -297,8 +317,8 @@
             <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
             <h3>Sobre a Northside</h3>
             <p style="margin-bottom:10px;">A Northside nasceu em 2026, no coração do Porto.</p>
-            <p style="margin-bottom:10px;">Foi criada por duas pessoas apaixonadas pela cidade e pela sua história.</p>
-            <p style="margin-bottom:0;">Uma marca portuguesa, pensada para chegar ao mundo inteiro.</p>
+            <p style="margin-bottom:10px;"> Criada por duas pessoas Portuenses, com orgulho na cidade.</p>
+            <p style="margin-bottom:0;">Uma marca portuguesa, pensada para percorrer o mundo.</p>
         </div>
     </div>
 
