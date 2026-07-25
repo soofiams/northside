@@ -289,12 +289,12 @@ function renderizarCarrinho() {
                 '<img src="' + produto.imagem + '" alt="">' +
                 '<a href="produto.html?id=' + id + '"><strong>' + produto.nome + '</strong></a>' +
             '</div></td>' +
-            '<td>' + formatarPreco(produto.preco) + '</td>' +
-            '<td><div style="display:flex;gap:8px;align-items:center;">' +
+            '<td data-label="Preço">' + formatarPreco(produto.preco) + '</td>' +
+            '<td data-label="Quantidade"><div style="display:flex;gap:8px;align-items:center;">' +
                 '<input type="number" value="' + qtd + '" min="1" max="' + produto.stock + '" class="input-qtd" style="width:60px;" ' +
                 'onchange="atualizarQuantidadeCarrinho(' + id + ', parseInt(this.value) || 1)">' +
             '</div></td>' +
-            '<td><strong>' + formatarPreco(subtotal) + '</strong></td>' +
+            '<td data-label="Subtotal"><strong>' + formatarPreco(subtotal) + '</strong></td>' +
             '<td><button class="btn-remover" onclick="removerDoCarrinho(' + id + ')">Remover</button></td>' +
         '</tr>';
     });
@@ -468,6 +468,23 @@ function renderizarProduto() {
 
 
 document.addEventListener('DOMContentLoaded', function () {
+
+    // ---- Menu hambúrguer (mobile) ----
+    const btnMenu = document.getElementById('btn-menu-mobile');
+    const navLinks = document.getElementById('nav-links');
+    if (btnMenu && navLinks) {
+        btnMenu.addEventListener('click', function () {
+            navLinks.classList.toggle('aberto');
+            btnMenu.classList.toggle('aberto');
+        });
+        // fechar o menu ao escolher uma opção
+        navLinks.querySelectorAll('a').forEach(function (link) {
+            link.addEventListener('click', function () {
+                navLinks.classList.remove('aberto');
+                btnMenu.classList.remove('aberto');
+            });
+        });
+    }
 
     // ---- Badge do carrinho, atualizado em todas as páginas ----
     atualizarBadgeCarrinho();
