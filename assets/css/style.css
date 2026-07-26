@@ -406,38 +406,6 @@ a { text-decoration: none; color: inherit; }
     line-height: 1;
 }
 .resumo-avaliacoes p { margin: 4px 0 0; color: var(--cinza-texto); font-size: 0.85rem; }
-footer.rodape-simples {
-    background: var(--azul-northside);
-    color: #c7cee6;
-}
-.rodape-conteudo {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 36px 30px 24px;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-}
-.rodape-marca .logo-northside { color: #fff; }
-.rodape-marca .logo-northside small { color: #9aa5cc; }
-.rodape-marca p { font-size: 0.82rem; color: #b9c2df; margin: 10px 0 0; max-width: 260px; line-height: 1.5; }
-.rodape-links { display: flex; flex-direction: column; gap: 8px; }
-.rodape-links a { color: #d9dfef; font-size: 0.85rem; }
-.rodape-links a:hover { color: #fff; text-decoration: underline; }
-.rodape-redes { display: flex; gap: 14px; align-items: flex-start; }
-.rodape-redes a { color: #fff; font-size: 1.25rem; }
-.rodape-redes a:hover { opacity: 0.75; }
-.rodape-copy {
-    border-top: 1px solid rgba(255,255,255,0.12);
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 14px 30px;
-    text-align: center;
-    font-size: 0.75rem;
-    color: #9aa5cc;
-}
 
 /*==========================
         FOOTER
@@ -449,109 +417,94 @@ footer.rodape-simples {
     color: #fff;
 }
 
-.footer-container {
-    max-width: 1300px;
-    margin: auto;
-    padding: 60px 40px;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 2fr;
-    gap: 50px;
+.footer-simples {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 26px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
 }
 
-.footer-brand h2 {
-    font-size: 2rem;
-    letter-spacing: 4px;
-    margin-bottom: 8px;
-}
+.footer-simples .logo-northside { color: #fff; }
+.footer-simples .logo-northside small { color: #9aa5cc; }
 
-.footer-brand p {
-    color: #dbe7ff;
+.footer-links-simples {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
 }
+.footer-links-simples a { color: #d9dfef; }
+.footer-links-simples a:hover { color: #fff; text-decoration: underline; }
 
 .footer-social {
     display: flex;
-    gap: 15px;
-    margin-top: 30px;
+    gap: 12px;
 }
 
 .footer-social a {
-    width: 46px;
-    height: 46px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    background: rgba(255,255,255,.12);
+    background: rgba(255,255,255,.1);
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
     text-decoration: none;
-    font-size: 1.2rem;
-    transition: .3s;
+    font-size: 1rem;
+    transition: .2s;
 }
 
 .footer-social a:hover {
-    background: white;
-    color: var(--azul-northside);
-    transform: translateY(-5px);
-}
-
-.footer-links h3,
-.footer-newsletter h3 {
-    margin-bottom: 20px;
-}
-
-.footer-links a {
-    display: block;
-    color: #dbe7ff;
-    margin-bottom: 12px;
-    text-decoration: none;
-    transition: .3s;
-}
-
-.footer-links a:hover {
-    color: white;
-    padding-left: 8px;
-}
-
-.footer-newsletter p {
-    color: #dbe7ff;
-    margin-bottom: 18px;
-}
-
-.footer-newsletter form {
-    display: flex;
-}
-
-.footer-newsletter input {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 8px 0 0 8px;
-    outline: none;
-}
-
-.footer-newsletter button {
-    background: #fff;
-    color: var(--azul-northside);
-    border: none;
-    padding: 14px 24px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 8px;
-    width: 100%;
-    transition: .3s;
-}
-
-.footer-newsletter button:hover {
-    background: #e5ecff;
+    background: rgba(255,255,255,.25);
 }
 
 .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,.15);
+    border-top: 1px solid rgba(255,255,255,.12);
     text-align: center;
-    padding: 20px;
-    color: #dbe7ff;
-    font-size: .9rem;
+    padding: 14px;
+    color: #9aa5cc;
+    font-size: .78rem;
 }
+
+/* ===== Faixa de newsletter (antes dos produtos) ===== */
+.newsletter-faixa {
+    background: var(--cinza-claro);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+}
+.newsletter-faixa-texto strong { color: var(--azul-northside); font-size: 0.88rem; }
+.newsletter-faixa-texto span { color: var(--cinza-texto); font-size: 0.8rem; margin-left: 6px; }
+.newsletter-faixa-form { display: flex; gap: 0; }
+.newsletter-faixa-form input {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    font-size: 0.85rem;
+    width: 200px;
+}
+.newsletter-faixa-form button {
+    background: var(--azul-northside);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+}
+.newsletter-faixa-form button:hover { background: var(--azul-hover); }
 
 /* ===== Modal de newsletter (10% desconto) ===== */
 .modal-overlay {
@@ -708,7 +661,6 @@ footer.rodape-simples {
 /* Tablets */
 @media (max-width: 1024px) {
     .avaliacoes-grid { grid-template-columns: repeat(2, 1fr); }
-    .footer-container { grid-template-columns: 1fr 1fr; }
 }
 
 /* Tablets pequenos / ativa o menu hambúrguer */
@@ -818,14 +770,14 @@ footer.rodape-simples {
     .resumo-avaliacoes { flex-direction: column; text-align: center; padding: 0 20px 24px; }
 
     .barra-pagamentos { flex-direction: column; gap: 12px; padding: 20px; }
-    .rodape-conteudo { flex-direction: column; text-align: center; padding: 30px 20px 20px; }
-    .rodape-marca p { margin-left: auto; margin-right: auto; }
-    .rodape-links { align-items: center; }
-    .rodape-redes { justify-content: center; width: 100%; }
 
-    .footer-container { grid-template-columns: 1fr; padding: 40px 24px; gap: 32px; text-align: center; }
+    .footer-simples { flex-direction: column; text-align: center; padding: 24px 20px; }
+    .footer-links-simples { justify-content: center; }
     .footer-social { justify-content: center; }
-    .footer-newsletter form { max-width: 320px; margin: 0 auto; }
+
+    .newsletter-faixa { flex-direction: column; padding: 18px 20px; }
+    .newsletter-faixa-form { width: 100%; max-width: 320px; }
+    .newsletter-faixa-form input { flex: 1; width: auto; }
 
     .modal-caixa { padding: 26px 20px; border-radius: 16px; }
     .checkout-pagamento-opcoes { justify-content: center; }

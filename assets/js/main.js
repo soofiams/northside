@@ -553,14 +553,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // O formulário do rodapé abre especificamente o modal da newsletter
-    const formRodape = document.getElementById('form-newsletter-footer');
-    if (formRodape) {
-        formRodape.addEventListener('submit', function (e) {
-            abrirModalPorId('modal-newsletter', e);
-        });
-    }
-
     // Fechar: botão "✕", clique fora da caixa, em qualquer modal da página
     document.querySelectorAll('.modal-overlay').forEach(function (modal) {
         modal.querySelectorAll('[data-fechar-modal]').forEach(function (btn) {
