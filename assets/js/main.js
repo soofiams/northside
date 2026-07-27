@@ -578,6 +578,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---- Checkout (finalizar compra), só existe na página do carrinho ----
+    const CODIGOS_DESCONTO = {
+        'NORTHSIDE10': 0.10,
+        'BEMVINDO15': 0.15,
+        'PORTO20': 0.20
+    };
+
+    // guarda os valores do pedido atual, para o botão "Aplicar" recalcular sem reler o carrinho
+    let checkoutItens = [];
+    let checkoutSubtotal = 0;
+    let checkoutEnvio = 0;
+    let checkoutDesconto = 0; // percentagem (0 a 1)
+
+    function renderizarResumoCheckout() {
+        let html = '';
+        checkoutItens.forEach(function (item) {
+            html += '<div class="linha-produto"><span>' + item.qtd + '× ' + item.nome + '</span><span>' + formatarPreco(item.subtotal) + '</span></div>';
+        });
+        html += '<div class="linha-produto"><span>Envio</span><span>' + (checkoutEnvio === 0 ? 'Grátis' : formatarPreco(checkoutEnvio)) + '</span></div>';
+
+        const valorDesconto = checkoutDesconto > 0 ? (checkoutSubtotal + checkoutEnvio) * checkoutDesconto : 0;
+        if (valorDesconto > 0) {
+            html += '<div class="linha-desconto"><span>Desconto (-' + Math.round(checkoutDesconto * 100) + '%)</span><span>-' + formatarPreco(valorDesconto) + '</span></div>';
+        }
+
+        const totalFinal = Math.max(0, checkoutSubtotal + checkoutEnvio - valorDesconto);
+        html += '<div class="linha-total"><span>Total</span><span>' + formatarPreco(totalFinal) + '</span></div>';
+        document.getElementById('checkout-resumo').innerHTML = html;
+    }
+
     const btnFinalizar = document.getElementById('btn-finalizar-compra');
     if (btnFinalizar) {
         btnFinalizar.addEventListener('click', function () {
@@ -585,28 +614,55 @@ document.addEventListener('DOMContentLoaded', function () {
             const ids = Object.keys(carrinho).filter(function (id) { return PRODUTOS[id]; });
             if (ids.length === 0) return; // carrinho vazio, não há o que finalizar
 
-            // Preencher o resumo dos produtos dentro do modal
-            let html = '';
-            let total = 0;
-            ids.forEach(function (id) {
+            checkoutItens = ids.map(function (id) {
                 const produto = PRODUTOS[id];
                 const qtd = carrinho[id];
-                const subtotal = qtd * produto.preco;
-                total += subtotal;
-                html += '<div class="linha-produto"><span>' + qtd + '× ' + produto.nome + '</span><span>' + formatarPreco(subtotal) + '</span></div>';
+                return { id: id, nome: produto.nome, qtd: qtd, subtotal: qtd * produto.preco };
             });
-            const envio = total >= 50 ? 0 : 4.99;
-            html += '<div class="linha-produto"><span>Envio</span><span>' + (envio === 0 ? 'Grátis' : formatarPreco(envio)) + '</span></div>';
-            html += '<div class="linha-total"><span>Total</span><span>' + formatarPreco(total + envio) + '</span></div>';
-            document.getElementById('checkout-resumo').innerHTML = html;
+            checkoutSubtotal = checkoutItens.reduce(function (soma, item) { return soma + item.subtotal; }, 0);
+            checkoutEnvio = checkoutSubtotal >= 50 ? 0 : 4.99;
+            checkoutDesconto = 0;
 
-            // Repor o formulário para um novo pedido e mostrar o modal
+            renderizarResumoCheckout();
+
+            // Repor o formulário e o campo de código para um novo pedido
             const formCheckout = document.getElementById('form-checkout');
             const confirmacaoCheckout = document.getElementById('checkout-confirmacao');
+            const campoDesconto = document.getElementById('checkout-desconto-input');
+            const msgDesconto = document.getElementById('checkout-desconto-msg');
             if (formCheckout) formCheckout.style.display = '';
             if (confirmacaoCheckout) confirmacaoCheckout.style.display = 'none';
+            if (campoDesconto) campoDesconto.value = '';
+            if (msgDesconto) { msgDesconto.textContent = ''; msgDesconto.className = 'checkout-desconto-msg'; }
 
             abrirModalPorId('modal-checkout');
+        });
+    }
+
+    // Aplicar o código de desconto
+    const btnAplicarDesconto = document.getElementById('btn-aplicar-desconto');
+    if (btnAplicarDesconto) {
+        btnAplicarDesconto.addEventListener('click', function () {
+            const campo = document.getElementById('checkout-desconto-input');
+            const msg = document.getElementById('checkout-desconto-msg');
+            const codigo = normalizarTexto(campo.value).toUpperCase().trim();
+
+            if (!codigo) {
+                msg.textContent = 'Escreve um código antes de aplicar.';
+                msg.className = 'checkout-desconto-msg erro';
+                return;
+            }
+
+            if (CODIGOS_DESCONTO[codigo] !== undefined) {
+                checkoutDesconto = CODIGOS_DESCONTO[codigo];
+                msg.textContent = '✓ Código aplicado: -' + Math.round(checkoutDesconto * 100) + '% no total.';
+                msg.className = 'checkout-desconto-msg sucesso';
+            } else {
+                checkoutDesconto = 0;
+                msg.textContent = 'Código inválido ou expirado.';
+                msg.className = 'checkout-desconto-msg erro';
+            }
+            renderizarResumoCheckout();
         });
     }
 
@@ -615,9 +671,16 @@ document.addEventListener('DOMContentLoaded', function () {
         formCheckout.addEventListener('submit', function (e) {
             e.preventDefault();
             const confirmacaoCheckout = document.getElementById('checkout-confirmacao');
+            const email = document.getElementById('checkout-email').value;
 
             formCheckout.style.display = 'none';
-            if (confirmacaoCheckout) confirmacaoCheckout.style.display = 'block';
+            if (confirmacaoCheckout) {
+                confirmacaoCheckout.innerHTML =
+                    '✓ Encomenda confirmada!<br>' +
+                    'Obrigado pela tua compra.<br><br>' +
+                    '📧 Enviámos um email de confirmação para <strong>' + email + '</strong>.';
+                confirmacaoCheckout.style.display = 'block';
+            }
 
             // Esvaziar o carrinho depois de confirmada a encomenda
             guardarCarrinho({});
@@ -625,7 +688,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             setTimeout(function () {
                 fecharModal(document.getElementById('modal-checkout'));
-            }, 3000);
+            }, 4000);
         });
     }
 

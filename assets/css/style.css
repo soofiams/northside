@@ -557,13 +557,25 @@ a { text-decoration: none; color: inherit; }
     margin: 14px 0 6px;
 }
 .checkout-form input[type="text"],
-.checkout-form input[type="tel"] {
+.checkout-form input[type="tel"],
+.checkout-form input[type="email"] {
     width: 100%;
     padding: 11px 12px;
     border: 1px solid var(--border);
     border-radius: 4px;
     font-size: 0.9rem;
 }
+.checkout-linha-dupla {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.checkout-desconto-linha { display: flex; gap: 8px; }
+.checkout-desconto-linha input { flex: 1; }
+.checkout-desconto-linha .btn-outline-northside { padding: 0 16px; font-size: 0.78rem; white-space: nowrap; }
+.checkout-desconto-msg { font-size: 0.78rem; margin-top: 6px; min-height: 1em; }
+.checkout-desconto-msg.sucesso { color: #1a7f43; font-weight: 700; }
+.checkout-desconto-msg.erro { color: #c22b2b; font-weight: 700; }
 .checkout-resumo {
     background: var(--cinza-claro);
     border-radius: 8px;
@@ -576,6 +588,13 @@ a { text-decoration: none; color: inherit; }
     justify-content: space-between;
     padding: 5px 0;
     color: var(--cinza-texto);
+}
+.checkout-resumo .linha-desconto {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    color: #1a7f43;
+    font-weight: 700;
 }
 .checkout-resumo .linha-total {
     display: flex;
@@ -781,6 +800,7 @@ a { text-decoration: none; color: inherit; }
 
     .modal-caixa { padding: 26px 20px; border-radius: 16px; }
     .checkout-pagamento-opcoes { justify-content: center; }
+    .checkout-linha-dupla { grid-template-columns: 1fr; gap: 0; }
 }
 
 /* Telemóveis pequenos — mais uma coluna só, para não espremer texto */
