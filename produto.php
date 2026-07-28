@@ -3,35 +3,41 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $id = (int)($_GET['id'] ?? 0);
-$produto = buscar_produto_por_id($pdo, $id);
+$produto = buscarProdutoPorId($pdo, $id);
 
 if (!$produto) {
     http_response_code(404);
     $titulo_pagina = 'Produto não encontrado';
     require __DIR__ . '/includes/header.php';
-    echo '<div class="carrinho-vazio">Este produto não existe ou já não está disponível. <br><a href="loja.php" class="btn-northside" style="margin-top:16px;display:inline-block;">Voltar à loja</a></div>';
+    echo '<div class="carrinho-vazio">Este produto não existe ou já não está disponível.<br><br><a href="loja.php" class="btn-northside">Voltar à loja</a></div>';
     require __DIR__ . '/includes/footer.php';
     exit;
 }
 
 $titulo_pagina = $produto['nome'];
 $stock = (int)$produto['stock'];
+$especificacoes = json_decode($produto['especificacoes'] ?? '{}', true) ?: [];
+$relacionados = buscarProdutosRelacionados($pdo, $produto);
 
 require __DIR__ . '/includes/header.php';
 ?>
 
-<?php if (!empty($_GET['msg'])): ?>
-    <div class="alerta alerta-sucesso"><?= htmlspecialchars($_GET['msg']) ?></div>
+<?php if (!empty($_GET['erro'])): ?>
+    <div class="alerta alerta-erro"><?= htmlspecialchars($_GET['erro']) ?></div>
 <?php endif; ?>
 
 <div class="produto-detalhe">
     <div class="img-principal">
-        <img src="<?= imagem_produto_url($produto['imagem']) ?>" alt="<?= htmlspecialchars($produto['nome']) ?>">
+        <img src="<?= imagemProdutoUrl($produto['imagem']) ?>" alt="<?= htmlspecialchars($produto['nome']) ?>">
     </div>
 
     <div class="info">
-        <div class="categoria-label"><?= htmlspecialchars($produto['categoria_nome'] ?? '') ?></div>
+        <div class="categoria-label"><?= htmlspecialchars(mb_strtoupper($produto['categoria_nome'] ?? '')) ?></div>
         <h1><?= htmlspecialchars($produto['nome']) ?></h1>
+        <div class="estrelas" style="margin-bottom:10px;">
+            <?= estrelasHtml($produto['estrelas_media']) ?>
+            <span class="num"><?= number_format($produto['estrelas_media'], 1, ',', '.') ?> · <?= (int)$produto['num_avaliacoes'] ?> avaliações</span>
+        </div>
 
         <?php if ($stock === 0): ?>
             <span class="badge-stock esgotado">● Esgotado</span>
@@ -41,7 +47,7 @@ require __DIR__ . '/includes/header.php';
             <span class="badge-stock em-stock">● Em stock (<?= $stock ?> disponíveis)</span>
         <?php endif; ?>
 
-        <div class="preco-grande"><?= formatar_preco($produto['preco']) ?></div>
+        <div class="preco-grande"><?= formatarPreco($produto['preco']) ?></div>
 
         <?php if ($stock > 0): ?>
             <form action="actions/carrinho_add.php" method="post" class="form-comprar">
@@ -55,7 +61,47 @@ require __DIR__ . '/includes/header.php';
         <?php endif; ?>
 
         <p class="descricao-produto"><?= nl2br(htmlspecialchars($produto['descricao'])) ?></p>
+
+        <?php if (!empty($especificacoes)): ?>
+            <table class="tabela-especificacoes">
+                <?php foreach ($especificacoes as $chave => $valor): ?>
+                    <tr><th><?= htmlspecialchars($chave) ?></th><td><?= htmlspecialchars($valor) ?></td></tr>
+                <?php endforeach; ?>
+            </table>
+        <?php endif; ?>
     </div>
 </div>
+
+<?php if (!empty($relacionados)): ?>
+<h2 class="secao-titulo">PRODUTOS RELACIONADOS</h2>
+<div class="grid-produtos grid-relacionados">
+    <?php foreach ($relacionados as $rel): $stockRel = (int)$rel['stock']; ?>
+        <div class="cartao-produto">
+            <a href="produto.php?id=<?= $rel['id'] ?>">
+                <div class="img-wrap">
+                    <img class="img-ativa" src="<?= imagemProdutoUrl($rel['imagem']) ?>" alt="<?= htmlspecialchars($rel['nome']) ?>">
+                </div>
+            </a>
+            <div class="corpo">
+                <div class="categoria-label"><?= htmlspecialchars(mb_strtoupper($rel['categoria_nome'] ?? '')) ?></div>
+                <a href="produto.php?id=<?= $rel['id'] ?>"><h3><?= htmlspecialchars($rel['nome']) ?></h3></a>
+                <div class="estrelas"><?= estrelasHtml($rel['estrelas_media']) ?> <span class="num">(<?= (int)$rel['num_avaliacoes'] ?>)</span></div>
+                <div class="linha-preco">
+                    <span class="preco"><?= formatarPreco($rel['preco']) ?></span>
+                    <?php if ($stockRel > 0): ?>
+                        <form action="actions/carrinho_add.php" method="post">
+                            <input type="hidden" name="produto_id" value="<?= $rel['id'] ?>">
+                            <input type="hidden" name="voltar" value="produto.php?id=<?= $produto['id'] ?>">
+                            <button type="submit" class="btn-add-cart" title="Adicionar ao carrinho">+</button>
+                        </form>
+                    <?php else: ?>
+                        <span class="rotulo-esgotado">ESGOTADO</span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -1,33 +1,21 @@
-# Northside — Loja Online
-#PROJETO EM CONCLUSÃO!!!
+# Northside — Loja Online (versão PHP + MySQL)
 
+Esta é a versão dinâmica da loja: base de dados a sério, carrinho por sessão, checkout com código de desconto validado no servidor, encomendas gravadas na base de dados, e email de confirmação real por SMTP.
 
-Loja online completa em **PHP + MySQL**: catálogo de produtos, página de produto com stock, carrinho de compras (adicionar/remover/atualizar) e painel de administração para gerir os produtos.
+## 1. Colocar os ficheiros no servidor
 
-## O que precisas para pôr a loja a funcionar
-
-- Um servidor com **PHP 8+** e **MySQL/MariaDB** (ex: XAMPP, MAMP, Laragon no teu computador, ou qualquer hosting com cPanel)
-- Não precisas de instalar nada extra — não há dependências externas (sem Composer, sem frameworks)
-
-## Passo 1 — Colocar os ficheiros no servidor
-
-Copia toda esta pasta `northside/` para a pasta pública do teu servidor:
+Copia toda esta pasta para o teu XAMPP/Laragon:
 - **XAMPP**: `htdocs/northside/`
-- **MAMP**: `htdocs/northside/`
 - **Laragon**: `www/northside/`
-- **Hosting (cPanel)**: `public_html/` (ou uma subpasta, se preferires)
 
-## Passo 2 — Criar a base de dados
+## 2. Criar a base de dados
 
-1. Abre o **phpMyAdmin** (ou outro gestor MySQL)
-2. Cria uma base de dados chamada `northside` (ou importa diretamente — o ficheiro já cria a base de dados)
-3. Importa o ficheiro `database/northside.sql`
-   - Isto cria as tabelas `produtos`, `categorias`, `admins`
-   - E insere as 5 categorias do menu + 6 produtos de exemplo (iguais aos da imagem que enviaste)
+1. Abre o **phpMyAdmin**
+2. Importa o ficheiro `database/schema.sql` — cria a base de dados `northside`, todas as tabelas, os 10 produtos, as avaliações de exemplo e 3 códigos de desconto (`NORTHSIDE10`, `BEMVINDO15`, `PORTO20`)
 
-## Passo 3 — Configurar a ligação à base de dados
+## 3. Configurar `config.php`
 
-Abre o ficheiro `config.php` e ajusta estas linhas com os dados do teu servidor:
+Abre `config.php` e ajusta:
 
 ```php
 define('DB_HOST', 'localhost');
@@ -36,58 +24,66 @@ define('DB_USER', 'root');      // o teu utilizador MySQL
 define('DB_PASS', '');          // a tua password MySQL
 ```
 
-Se a loja não estiver na raiz do site (ex: `teusite.com/northside/`), ajusta também:
-```php
-define('URL_BASE', '/northside/');
-```
+Se a loja não estiver na raiz do site, ajusta também `URL_BASE` (ex: `/northside/`).
 
-## Passo 4 — Criar a tua conta de administrador
+## 4. Configurar o envio de email (SMTP)
 
-No browser, acede a:
-```
-http://localhost/northside/admin/setup.php
-```
-Escolhe um utilizador e password. Depois disso **apaga o ficheiro `admin/setup.php`** por segurança (só é preciso uma vez).
+O envio de email usa o **PHPMailer**, porque a função `mail()` do PHP normalmente não funciona num XAMPP/Laragon sem configuração extra.
 
-## Passo 5 — Já está! Explora a loja
+### Passo a passo com Gmail (o mais simples):
 
-- **Loja (cliente)**: `http://localhost/northside/index.php`
-- **Painel de admin**: `http://localhost/northside/admin/login.php`
+1. Instala o [Composer](https://getcomposer.org/download/), se ainda não tiveres
+2. No terminal, dentro da pasta do projeto:
+   ```bash
+   composer require phpmailer/phpmailer
+   ```
+3. Ativa a **verificação em 2 passos** na tua conta Gmail
+4. Cria uma **Password de aplicação** em [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
+5. Em `config.php`, preenche:
+   ```php
+   define('SMTP_HOST', 'smtp.gmail.com');
+   define('SMTP_PORT', 587);
+   define('SMTP_UTILIZADOR', 'o-teu-email@gmail.com');
+   define('SMTP_PASSWORD', 'a-password-de-aplicacao-de-16-letras');
+   ```
 
-## Como funciona cada parte
+Se preferires outro serviço (Outlook, um SMTP do teu hosting, Mailtrap para testes, etc.), muda só o `SMTP_HOST` e a porta — o resto funciona da mesma forma.
 
-| Ficheiro/pasta | O que faz |
+**Nota:** se não instalares o PHPMailer, o site tenta usar o `mail()` nativo do PHP como recurso de emergência — mas é muito provável que não envie nada num ambiente local sem configuração adicional. Vais ver isso identificado claramente no ecrã de confirmação da encomenda ("não foi possível enviar o email").
+
+## 5. Já está — explora a loja
+
+- **Loja**: `http://localhost/northside/index.php`
+- Testa uma compra completa: adiciona produtos ao carrinho, vai a "Finalizar Compra", experimenta um dos códigos de desconto, e confirma — deves receber o email na caixa de entrada que configuraste.
+
+## O que mudou em relação à versão HTML
+
+| Antes (HTML) | Agora (PHP) |
 |---|---|
-| `index.php` | Página inicial (hero + destaques), igual ao layout que enviaste |
-| `loja.php` | Catálogo completo, com filtro por categoria (menu) e pesquisa |
-| `produto.php?id=X` | Página do produto — mostra **"Em stock"**, **"Últimas unidades"** ou **"Esgotado"** consoante a quantidade |
-| `carrinho.php` | Carrinho — atualizar quantidade ou remover produtos |
-| `actions/carrinho_add.php` | Adiciona ao carrinho (nunca deixa passar do stock disponível) |
-| `actions/carrinho_remove.php` | Remove um produto do carrinho |
-| `actions/carrinho_update.php` | Atualiza a quantidade de um item no carrinho |
-| `admin/` | Painel para criar, editar e eliminar produtos, com upload de imagem e gestão de stock |
-| `database/schema.sql` | Estrutura da base de dados + dados de exemplo |
+| Produtos escritos em `PRODUTOS` no JavaScript | Produtos na tabela `produtos` da base de dados |
+| Carrinho no `localStorage` do browser | Carrinho na sessão do servidor (`$_SESSION`) |
+| Checkout simulado, sem gravar nada | Encomenda gravada em `encomendas` + `encomenda_itens`, com o stock a descontar a sério |
+| Código de desconto fixo no JS | Código validado no servidor, contra a tabela `codigos_desconto` |
+| "Email enviado" era só uma mensagem no ecrã | Email real, enviado por SMTP via PHPMailer |
+| Pesquisa/categoria filtradas no browser | Filtradas com uma query SQL no servidor |
 
-## Gerir produtos (adicionar / remover / alterar stock)
+## Estrutura
 
-Tudo é feito no painel de administração, sem tocar em código:
+```
+config.php                       → ligação à BD + definições da loja/SMTP
+includes/functions.php           → todas as funções (produtos, carrinho, encomendas, desconto)
+includes/email.php                → construção e envio do email de confirmação
+includes/header.php / footer.php  → layout partilhado por todas as páginas
+index.php, loja.php, produto.php, carrinho.php, avaliacoes.php
+actions/carrinho_add.php          → adicionar ao carrinho
+actions/carrinho_remove.php       → remover do carrinho
+actions/carrinho_update.php       → atualizar quantidade
+actions/aplicar_desconto.php      → valida o código de desconto (chamado via AJAX)
+actions/finalizar_compra.php      → processa o checkout completo (AJAX)
+actions/newsletter_subscrever.php → grava a subscrição da newsletter
+database/schema.sql               → estrutura da base de dados + dados de exemplo
+```
 
-1. Faz login em `admin/login.php`
-2. Em **Produtos**, podes:
-   - **Criar** um novo produto (nome, descrição, preço, categoria, stock, imagem)
-   - **Editar** qualquer produto existente
-   - **Eliminar** produtos
-   - Marcar um produto como **"Destaque"** para aparecer na página inicial
-   - Marcar como **"Ativo"**/inativo para o esconder da loja sem apagar
+## Próximo passo: o backoffice
 
-Sempre que alterares o campo **Stock**, isso reflete-se automaticamente:
-- Na etiqueta da página do produto (Em stock / Últimas unidades / Esgotado)
-- No botão de "Adicionar ao carrinho" (fica desativado se o stock for 0)
-- O carrinho nunca deixa um cliente comprar mais unidades do que as que tens em stock
-
-## Próximos passos sugeridos (não incluídos ainda)
-
-- Pagamentos reais (ex: Stripe, MB WAY, Multibanco via SIBS)
-- Envio de emails de confirmação de encomenda
-- Sistema de contas de cliente (registo/login)
-- Página de "Finalizar compra" com moradas de envio
+Como combinámos, o backoffice (login de admin, gestão de produtos/stock, códigos de desconto, e consulta de encomendas) fica para a fase seguinte — agora que a base de dados e o site público já estão a funcionar a sério, torna-se muito mais direto construir os ecrãs de gestão em cima destas mesmas tabelas.
