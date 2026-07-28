@@ -144,31 +144,40 @@ require __DIR__ . '/includes/header.php';
 </div>
 <?php endif; ?>
 
-<div id="avaliar" class="avaliacao-form-wrap">
-    <h3>Já compraste este produto? Deixa a tua avaliação</h3>
-    <p class="aviso">A tua opinião ajuda outros clientes a escolher melhor.</p>
-    <form action="actions/avaliacao_criar.php" method="post">
-        <input type="hidden" name="produto_id" value="<?= $produto['id'] ?>">
-        <input type="hidden" name="voltar" value="produto.php?id=<?= $produto['id'] ?>">
+<div id="avaliar" style="text-align:center;margin-top:40px;">
+    <button type="button" class="btn-outline-northside" data-abrir-modal="modal-avaliar">JÁ COMPRASTE ESTE PRODUTO? DEIXA A TUA AVALIAÇÃO</button>
+</div>
 
-        <label style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin-bottom:6px;">Classificação</label>
-        <div class="estrelas-input" id="estrelas-input">
-            <span data-valor="1">★</span>
-            <span data-valor="2">★</span>
-            <span data-valor="3">★</span>
-            <span data-valor="4">★</span>
-            <span data-valor="5">★</span>
-        </div>
-        <input type="hidden" name="estrelas" id="input-estrelas" value="5">
+<!-- Modal: deixar uma avaliação sobre este produto -->
+<div class="modal-overlay" id="modal-avaliar">
+    <div class="modal-caixa" style="max-width:440px;text-align:left;">
+        <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
+        <h3 style="text-align:center;">Deixa a tua Avaliação</h3>
+        <p style="text-align:center;color:var(--cinza-texto);font-size:0.85rem;margin-bottom:18px;">Sobre: <strong><?= htmlspecialchars($produto['nome']) ?></strong></p>
 
-        <label for="avaliacao-nome" style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin:14px 0 6px;">O teu nome</label>
-        <input type="text" name="nome" id="avaliacao-nome" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:4px;">
+        <form action="actions/avaliacao_criar.php" method="post">
+            <input type="hidden" name="produto_id" value="<?= $produto['id'] ?>">
+            <input type="hidden" name="voltar" value="produto.php?id=<?= $produto['id'] ?>">
 
-        <label for="avaliacao-comentario" style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin:14px 0 6px;">O teu comentário</label>
-        <textarea name="comentario" id="avaliacao-comentario" rows="3" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
+            <label style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin-bottom:6px;">Classificação</label>
+            <div class="estrelas-input" id="estrelas-input">
+                <span data-valor="1">★</span>
+                <span data-valor="2">★</span>
+                <span data-valor="3">★</span>
+                <span data-valor="4">★</span>
+                <span data-valor="5">★</span>
+            </div>
+            <input type="hidden" name="estrelas" id="input-estrelas" value="5">
 
-        <button type="submit" class="btn-northside" style="margin-top:16px;">ENVIAR AVALIAÇÃO</button>
-    </form>
+            <label for="avaliacao-nome" style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin:14px 0 6px;">O teu nome</label>
+            <input type="text" name="nome" id="avaliacao-nome" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:4px;">
+
+            <label for="avaliacao-comentario" style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin:14px 0 6px;">O teu comentário</label>
+            <textarea name="comentario" id="avaliacao-comentario" rows="3" required style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:4px;font-family:inherit;"></textarea>
+
+            <button type="submit" class="btn-northside" style="width:100%;margin-top:16px;">ENVIAR AVALIAÇÃO</button>
+        </form>
+    </div>
 </div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
