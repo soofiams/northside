@@ -20,6 +20,7 @@
             <nav class="footer-links-simples">
                 <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
                 <a href="#" data-abrir-modal="modal-newsletter">Newsletter</a>
+                <a href="<?= URL_BASE ?>encomenda.php">Acompanhar Encomenda</a>
                 <a href="<?= URL_BASE ?>devolucoes.php">Devoluções</a>
                 <a href="#" data-abrir-modal="modal-privacidade">Política de Privacidade</a>
                 <a href="#" data-abrir-modal="modal-contactos">Contactos</a>
@@ -117,6 +118,6 @@
         </form>
     </div>
 
-    <script src="<?= URL_BASE ?>assets/js/main.js"></script>
+    <script src="<?= URL_BASE ?>assets/js/main.js?v=<?= @filemtime(__DIR__ . '/../assets/js/main.js') ?: time() ?>"></script>
 </body>
 </html>

@@ -222,7 +222,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 ? '📧 Enviámos um email de confirmação para <strong>' + resposta.email + '</strong>.'
                                 : '⚠️ A encomenda foi registada, mas não foi possível enviar o email de confirmação (verifica as definições SMTP em config.php).') +
                             linksAvaliar +
-                            '<div style="margin-top:16px;"><a href="loja.php" class="btn-northside" style="display:inline-block;">CONTINUAR A COMPRAR</a></div>';
+                            '<div style="margin-top:16px;"><a href="loja.php" class="btn-northside" style="display:inline-block;">CONTINUAR A COMPRAR</a> ' +
+                            '<a href="encomenda.php" class="btn-outline-northside" style="display:inline-block;">ACOMPANHAR ENCOMENDA</a></div>';
                         confirmacaoCheckout.style.display = 'block';
                     } else {
                         btnSubmit.disabled = false;
@@ -560,6 +561,88 @@ document.addEventListener('DOMContentLoaded', function () {
                     mostrarAvisoChat('Não foi possível ligar ao servidor. A mensagem não foi enviada.');
                 });
         });
+    }
+
+
+    // ============================================
+    // Acompanhar encomenda (só existe em encomenda.php)
+    // ============================================
+    const btnConsultarEncomenda = document.getElementById('btn-consultar-encomenda');
+    if (btnConsultarEncomenda) {
+        const passo1 = document.getElementById('acompanhar-passo-1');
+        const resultado = document.getElementById('acompanhar-resultado');
+        const msg = document.getElementById('acompanhar-msg');
+        const ORDEM_ESTADOS = ['confirmada', 'enviada', 'entregue'];
+
+        btnConsultarEncomenda.addEventListener('click', function () {
+            const numero = document.getElementById('acompanhar-numero').value.trim();
+            const email = document.getElementById('acompanhar-email').value.trim();
+            msg.textContent = '';
+            msg.className = 'devolucao-msg';
+
+            if (!numero || !email) {
+                msg.textContent = 'Preenche o número da encomenda e o email.';
+                msg.className = 'devolucao-msg erro';
+                return;
+            }
+
+            const dados = new FormData();
+            dados.append('numero_encomenda', numero);
+            dados.append('email', email);
+
+            fetch('actions/encomenda_consultar.php', { method: 'POST', body: dados })
+                .then(function (r) { return r.json(); })
+                .then(function (resposta) {
+                    if (!resposta.sucesso) {
+                        msg.textContent = resposta.erro;
+                        msg.className = 'devolucao-msg erro';
+                        return;
+                    }
+
+                    document.getElementById('acompanhar-numero-confirmado').textContent = '#' + String(resposta.encomenda_id).padStart(5, '0');
+                    document.getElementById('acompanhar-data').textContent = resposta.data;
+                    document.getElementById('acompanhar-total').textContent = resposta.total;
+                    document.getElementById('acompanhar-pagamento').textContent = resposta.metodo_pagamento;
+                    document.getElementById('acompanhar-morada').textContent = resposta.morada;
+
+                    const avisoCancelada = document.getElementById('acompanhar-cancelada-aviso');
+                    const progresso = document.getElementById('acompanhar-progresso');
+                    if (resposta.estado === 'cancelada') {
+                        avisoCancelada.style.display = 'block';
+                        progresso.style.display = 'none';
+                    } else {
+                        avisoCancelada.style.display = 'none';
+                        progresso.style.display = 'flex';
+                        const indiceAtual = ORDEM_ESTADOS.indexOf(resposta.estado); // -1 se ainda "pendente"
+                        progresso.querySelectorAll('.estado-passo').forEach(function (passo, i) {
+                            passo.classList.toggle('concluido', i <= indiceAtual);
+                        });
+                    }
+
+                    const lista = document.getElementById('acompanhar-lista-itens');
+                    lista.innerHTML = resposta.itens.map(function (item) {
+                        const detalhe = item.quantidade + '× ' + item.nome + (item.tamanho ? ' (Tamanho ' + item.tamanho + ')' : '');
+                        return '<div class="devolucao-item-linha"><span class="nome">' + detalhe + '</span><span class="detalhe" style="margin-left:auto;">' + item.subtotal + '</span></div>';
+                    }).join('');
+
+                    passo1.style.display = 'none';
+                    resultado.style.display = 'block';
+                })
+                .catch(function () {
+                    msg.textContent = 'Não foi possível ligar ao servidor. Tenta novamente.';
+                    msg.className = 'devolucao-msg erro';
+                });
+        });
+
+        const btnVoltarAcompanhar = document.getElementById('btn-acompanhar-voltar');
+        if (btnVoltarAcompanhar) {
+            btnVoltarAcompanhar.addEventListener('click', function () {
+                resultado.style.display = 'none';
+                passo1.style.display = 'block';
+                document.getElementById('acompanhar-numero').value = '';
+                document.getElementById('acompanhar-email').value = '';
+            });
+        }
     }
 
 });

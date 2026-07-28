@@ -879,6 +879,26 @@ a { text-decoration: none; color: inherit; }
 .devolucao-item-linha .detalhe { color: var(--cinza-texto); font-size: 0.8rem; }
 .devolucao-item-linha .ja-pedida { color: #b0730a; font-size: 0.76rem; font-weight: 700; margin-left: auto; }
 
+/* ===== Barra de progresso do estado da encomenda ===== */
+.estado-encomenda-track { display: flex; justify-content: space-between; margin: 26px 0 10px; }
+.estado-passo { flex: 1; text-align: center; position: relative; }
+.estado-passo .linha {
+    position: absolute; top: 18px; left: -50%; width: 100%; height: 3px;
+    background: var(--border); z-index: 0;
+}
+.estado-passo:first-child .linha { display: none; }
+.estado-passo .circulo {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--border); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 8px; font-size: 0.9rem; position: relative; z-index: 1;
+}
+.estado-passo .rotulo { font-size: 0.75rem; font-weight: 700; color: var(--cinza-texto); }
+.estado-passo.concluido .circulo { background: var(--azul-northside); }
+.estado-passo.concluido .linha { background: var(--azul-northside); }
+.estado-passo.concluido .rotulo { color: var(--azul-northside); }
+
+
 /* ===== Chat privado ===== */
 .chat-botao {
     position: fixed;
