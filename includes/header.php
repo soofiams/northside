@@ -18,7 +18,7 @@ $total_carrinho = carrinhoTotalItens();
 <header class="site-header">
 <div class="top-bar">
     <div class="container-fluid">
-        <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE <?= (int)PORTES_GRATIS_ACIMA_DE ?>€</span>
+        <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE <?= (int)buscarCustosEnvio($pdo)['gratis_acima_de'] ?>€</span>
         <div>
             <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
             <a href="#">Ajuda</a>

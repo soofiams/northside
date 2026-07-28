@@ -86,6 +86,22 @@ Se preferires outro serviço (Outlook, um SMTP do teu hosting, Mailtrap para tes
 
 **Se já tens a base de dados de antes**, corre o `database/migracao_3.sql` no phpMyAdmin (cria só as tabelas novas de devoluções e chat, sem tocar no resto).
 
+## Novidades desta versão
+
+- **Envio grátis corrigido**: havia um erro clássico de vírgula flutuante do PHP — em certos casos, uma soma como 29,99€ + 20,01€ dava internamente algo como 49,999999999996 em vez de 50,00 exato, e por isso o envio grátis não ativava mesmo estando no valor certo. Agora o subtotal é arredondado a 2 casas decimais antes de comparar.
+- **Valores de envio editáveis**: o limiar de portes grátis (antes fixo em 50€) e o custo de envio (antes fixo em 4,99€) já não estão no código — vivem na tabela `definicoes`, tal como os contactos. Para os alterar:
+  ```sql
+  UPDATE definicoes SET valor = '75.00' WHERE chave = 'envio_gratis_acima_de';
+  UPDATE definicoes SET valor = '5.99' WHERE chave = 'envio_custo';
+  ```
+- Sobre a **percentagem** dos descontos: essa já vivia na base de dados desde o início (tabela `codigos_desconto`, coluna `percentagem`) — não está fixa no código. Para criares ou alterares um código:
+  ```sql
+  UPDATE codigos_desconto SET percentagem = 0.20 WHERE codigo = 'NORTHSIDE10';
+  INSERT INTO codigos_desconto (codigo, percentagem, ativo) VALUES ('VERAO25', 0.25, 1);
+  ```
+
+**Se já tens a base de dados de antes**, corre o `database/migracao_4.sql` no phpMyAdmin.
+
 ## Estrutura
 
 ```

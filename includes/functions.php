@@ -279,7 +279,7 @@ function validarCodigoDesconto(PDO $pdo, string $codigo): ?array {
 
 function criarEncomenda(PDO $pdo, array $dadosCliente, array $itensCarrinho, ?array $codigoDesconto): int {
     $subtotal = carrinhoTotalValor($itensCarrinho);
-    $envio = $subtotal >= PORTES_GRATIS_ACIMA_DE ? 0 : CUSTO_ENVIO;
+    $envio = calcularEnvio($pdo, $subtotal);
     $valorDesconto = $codigoDesconto ? round(($subtotal + $envio) * $codigoDesconto['percentagem'], 2) : 0;
     $total = max(0, $subtotal + $envio - $valorDesconto);
 
@@ -360,6 +360,29 @@ function buscarEncomendaCompleta(PDO $pdo, int $id): ?array {
 function marcarEmailEnviado(PDO $pdo, int $encomendaId): void {
     $stmt = $pdo->prepare("UPDATE encomendas SET email_enviado = 1 WHERE id = :id");
     $stmt->execute(['id' => $encomendaId]);
+}
+
+// ============================================
+// Envio (valores editáveis na tabela "definicoes")
+// ============================================
+
+// Lê os valores de envio da base de dados, com recurso às constantes de
+// config.php caso a migração ainda não tenha sido corrida.
+function buscarCustosEnvio(PDO $pdo): array {
+    return [
+        'gratis_acima_de' => (float)buscarDefinicao($pdo, 'envio_gratis_acima_de', (string)PORTES_GRATIS_ACIMA_DE),
+        'custo' => (float)buscarDefinicao($pdo, 'envio_custo', (string)CUSTO_ENVIO),
+    ];
+}
+
+// Calcula o custo de envio para um subtotal. O arredondamento a 2 casas
+// decimais antes da comparação evita erros de vírgula flutuante do PHP
+// (ex: 49,999999999996 em vez de 50,00 exato), que faziam o envio grátis
+// às vezes não ativar mesmo estando no valor certo.
+function calcularEnvio(PDO $pdo, float $subtotal): float {
+    $custos = buscarCustosEnvio($pdo);
+    $subtotalArredondado = round($subtotal, 2);
+    return $subtotalArredondado >= $custos['gratis_acima_de'] ? 0.0 : $custos['custo'];
 }
 
 // ============================================

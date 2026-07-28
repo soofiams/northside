@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/functions.php';
 $titulo_pagina = 'Carrinho';
 $itens = carrinhoDetalhado($pdo);
 $subtotal = carrinhoTotalValor($itens);
-$envio = $subtotal >= PORTES_GRATIS_ACIMA_DE ? 0 : CUSTO_ENVIO;
+$envio = calcularEnvio($pdo, $subtotal);
 
 require __DIR__ . '/includes/header.php';
 ?>

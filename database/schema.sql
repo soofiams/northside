@@ -212,6 +212,8 @@ INSERT INTO produto_tamanhos (produto_id, tamanho, stock) VALUES
 -- Contactos (editáveis aqui, ou mais tarde através do backoffice)
 INSERT INTO definicoes (chave, valor) VALUES
 ('contacto_email', 'apoio@northside.pt'),
-('contacto_telefone', '+351 900 000 000');
+('contacto_telefone', '+351 900 000 000'),
+('envio_gratis_acima_de', '50.00'),
+('envio_custo', '4.99');
 
 -- Nota: a conta de administrador é criada mais tarde através de admin/setup.php (fase do backoffice)
