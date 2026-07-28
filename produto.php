@@ -149,6 +149,7 @@ require __DIR__ . '/includes/header.php';
     <p class="aviso">A tua opinião ajuda outros clientes a escolher melhor.</p>
     <form action="actions/avaliacao_criar.php" method="post">
         <input type="hidden" name="produto_id" value="<?= $produto['id'] ?>">
+        <input type="hidden" name="voltar" value="produto.php?id=<?= $produto['id'] ?>">
 
         <label style="display:block;font-weight:700;font-size:0.85rem;color:var(--azul-northside);margin-bottom:6px;">Classificação</label>
         <div class="estrelas-input" id="estrelas-input">

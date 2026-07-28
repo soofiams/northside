@@ -169,7 +169,7 @@ function mediaAvaliacoesGeral(PDO $pdo): array {
     return ['media' => round((float)$r['media'], 1), 'total' => (int)$r['total']];
 }
 
-function criarAvaliacaoProduto(PDO $pdo, int $produtoId, string $nome, int $estrelas, string $comentario): void {
+function criarAvaliacaoProduto(PDO $pdo, ?int $produtoId, string $nome, int $estrelas, string $comentario): void {
     $estrelas = max(1, min(5, $estrelas));
 
     $stmt = $pdo->prepare(
@@ -182,6 +182,9 @@ function criarAvaliacaoProduto(PDO $pdo, int $produtoId, string $nome, int $estr
         'estrelas' => $estrelas,
         'comentario' => $comentario,
     ]);
+
+    // só recalcula a média/contagem do produto se a avaliação estiver ligada a um
+    if ($produtoId === null) return;
 
     $stmt2 = $pdo->prepare(
         "UPDATE produtos SET

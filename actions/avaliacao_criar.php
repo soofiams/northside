@@ -2,25 +2,30 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-$produto_id = (int)($_POST['produto_id'] ?? 0);
+$produto_id_raw = trim($_POST['produto_id'] ?? '');
+$produto_id = $produto_id_raw !== '' ? (int)$produto_id_raw : null;
 $nome = trim($_POST['nome'] ?? '');
 $estrelas = (int)($_POST['estrelas'] ?? 5);
 $comentario = trim($_POST['comentario'] ?? '');
+$voltar = trim($_POST['voltar'] ?? '') ?: 'avaliacoes.php';
 
-$voltar = 'produto.php?id=' . $produto_id;
-
-$produto = buscarProdutoPorId($pdo, $produto_id);
-if (!$produto) {
-    header('Location: ' . URL_BASE . 'loja.php?erro=' . urlencode('Produto não encontrado.'));
-    exit;
+// se veio ligada a um produto, confirma que ele existe mesmo
+if ($produto_id !== null) {
+    $produto = buscarProdutoPorId($pdo, $produto_id);
+    if (!$produto) {
+        header('Location: ' . URL_BASE . 'loja.php?erro=' . urlencode('Produto não encontrado.'));
+        exit;
+    }
 }
 
+$separador = str_contains($voltar, '?') ? '&' : '?';
+
 if ($nome === '' || $comentario === '') {
-    header('Location: ' . URL_BASE . $voltar . '&erro=' . urlencode('Preenche o nome e o comentário.') . '#avaliar');
+    header('Location: ' . URL_BASE . $voltar . $separador . 'erro=' . urlencode('Preenche o nome e o comentário.') . '#avaliar');
     exit;
 }
 
 criarAvaliacaoProduto($pdo, $produto_id, $nome, $estrelas, $comentario);
 
-header('Location: ' . URL_BASE . $voltar . '&msg=' . urlencode('Obrigado! A tua avaliação foi publicada.') . '#avaliar');
+header('Location: ' . URL_BASE . $voltar . $separador . 'msg=' . urlencode('Obrigado! A tua avaliação foi publicada.') . '#avaliar');
 exit;
