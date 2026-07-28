@@ -12,7 +12,19 @@ define('DB_PASS', '');          // altera para a tua password MySQL
 
 // --- Loja ---
 define('LOJA_NOME', 'NORTHSIDE');
-define('URL_BASE', '/');        // se a loja não estiver na raiz do site, ex: '/northside/'
+
+// URL_BASE é detetado automaticamente a partir da pasta onde este ficheiro está,
+// por isso não precisas de o configurar à mão — funciona seja qual for o nome
+// que deres à pasta do projeto (northside, northside-php, loja, etc.)
+$diretorio_projeto = str_replace('\\', '/', __DIR__);
+$document_root = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/'));
+$url_base = (stripos($diretorio_projeto, $document_root) === 0)
+    ? substr($diretorio_projeto, strlen($document_root))
+    : '';
+$url_base = '/' . trim($url_base, '/');
+if ($url_base !== '/') $url_base .= '/';
+define('URL_BASE', $url_base);
+
 define('PORTES_GRATIS_ACIMA_DE', 50.00);
 define('CUSTO_ENVIO', 4.99);
 

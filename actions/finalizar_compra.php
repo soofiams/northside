@@ -66,10 +66,20 @@ if ($encomendaCompleta) {
 // --- Esvaziar o carrinho ---
 $_SESSION['carrinho'] = [];
 
+// Lista de produtos comprados (sem repetir), para convidar a avaliar depois da compra
+$produtosComprados = [];
+$idsVistos = [];
+foreach ($itens as $item) {
+    if (in_array($item['produto']['id'], $idsVistos)) continue;
+    $idsVistos[] = $item['produto']['id'];
+    $produtosComprados[] = ['id' => $item['produto']['id'], 'nome' => $item['produto']['nome']];
+}
+
 echo json_encode([
     'sucesso' => true,
     'encomenda_id' => $encomendaId,
     'email' => $email,
     'email_enviado' => $emailEnviado,
     'total' => formatarPreco($encomendaCompleta['total']),
+    'produtos' => $produtosComprados,
 ]);

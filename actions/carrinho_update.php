@@ -2,16 +2,23 @@
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-$produto_id = (int)($_POST['produto_id'] ?? 0);
+$chave = (string)($_POST['chave'] ?? '');
 $quantidade = (int)($_POST['quantidade'] ?? 1);
 
-$produto = buscarProdutoPorId($pdo, $produto_id);
+if ($chave !== '' && isset($_SESSION['carrinho'][$chave])) {
+    $info = analisarChaveCarrinho($chave);
+    $produto = buscarProdutoPorId($pdo, $info['produto_id']);
 
-if ($produto && isset($_SESSION['carrinho'][$produto_id])) {
-    if ($quantidade <= 0) {
-        unset($_SESSION['carrinho'][$produto_id]);
-    } else {
-        $_SESSION['carrinho'][$produto_id] = min($quantidade, (int)$produto['stock']);
+    if ($produto) {
+        $stockDisponivel = $info['tamanho']
+            ? (buscarStockTamanho($pdo, $info['produto_id'], $info['tamanho']) ?? 0)
+            : (int)$produto['stock'];
+
+        if ($quantidade <= 0) {
+            unset($_SESSION['carrinho'][$chave]);
+        } else {
+            $_SESSION['carrinho'][$chave] = min($quantidade, $stockDisponivel);
+        }
     }
 }
 

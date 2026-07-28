@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-$produto_id = (int)($_POST['produto_id'] ?? 0);
+$chave = (string)($_POST['chave'] ?? '');
 
-if (isset($_SESSION['carrinho'][$produto_id])) {
-    unset($_SESSION['carrinho'][$produto_id]);
+if ($chave !== '' && isset($_SESSION['carrinho'][$chave])) {
+    unset($_SESSION['carrinho'][$chave]);
 }
 
 header('Location: ' . URL_BASE . 'carrinho.php?msg=' . urlencode('Produto removido do carrinho.'));

@@ -206,17 +206,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(function (resposta) {
                     if (resposta.sucesso) {
                         formCheckout.style.display = 'none';
+
+                        let linksAvaliar = '';
+                        if (resposta.produtos && resposta.produtos.length > 0) {
+                            linksAvaliar = '<p style="margin:16px 0 8px;font-weight:700;color:var(--azul-northside);">Avalia os teus produtos:</p>';
+                            resposta.produtos.forEach(function (p) {
+                                linksAvaliar += '<a href="produto.php?id=' + p.id + '#avaliar" class="btn-outline-northside" style="margin:3px;padding:7px 14px;font-size:0.75rem;display:inline-block;">' + p.nome + '</a>';
+                            });
+                        }
+
                         confirmacaoCheckout.innerHTML =
                             '✓ Encomenda #' + String(resposta.encomenda_id).padStart(5, '0') + ' confirmada!<br>' +
                             'Obrigado pela tua compra — total: ' + resposta.total + '<br><br>' +
                             (resposta.email_enviado
                                 ? '📧 Enviámos um email de confirmação para <strong>' + resposta.email + '</strong>.'
-                                : '⚠️ A encomenda foi registada, mas não foi possível enviar o email de confirmação (verifica as definições SMTP em config.php).');
+                                : '⚠️ A encomenda foi registada, mas não foi possível enviar o email de confirmação (verifica as definições SMTP em config.php).') +
+                            linksAvaliar +
+                            '<div style="margin-top:16px;"><a href="loja.php" class="btn-northside" style="display:inline-block;">CONTINUAR A COMPRAR</a></div>';
                         confirmacaoCheckout.style.display = 'block';
-
-                        setTimeout(function () {
-                            window.location.href = 'carrinho.php';
-                        }, 5000);
                     } else {
                         btnSubmit.disabled = false;
                         btnSubmit.textContent = 'CONFIRMAR ENCOMENDA';
@@ -228,6 +235,269 @@ document.addEventListener('DOMContentLoaded', function () {
                     btnSubmit.textContent = 'CONFIRMAR ENCOMENDA';
                     alert('Não foi possível ligar ao servidor. Tenta novamente.');
                 });
+        });
+    }
+
+    // ============================================
+    // Seletor de tamanhos (roupa)
+    // ============================================
+    const tamanhosSelector = document.getElementById('tamanhos-selector');
+    const formProdutoPrincipal = document.getElementById('form-produto-principal');
+    if (tamanhosSelector && formProdutoPrincipal) {
+        const inputTamanho = document.getElementById('input-tamanho-selecionado');
+        const avisoTamanho = document.getElementById('aviso-tamanho');
+
+        tamanhosSelector.querySelectorAll('.tamanho-pill').forEach(function (pill) {
+            if (pill.classList.contains('indisponivel')) return;
+            pill.addEventListener('click', function () {
+                tamanhosSelector.querySelectorAll('.tamanho-pill').forEach(function (p) { p.classList.remove('selecionado'); });
+                pill.classList.add('selecionado');
+                inputTamanho.value = pill.dataset.tamanho;
+                avisoTamanho.style.display = 'none';
+            });
+        });
+
+        formProdutoPrincipal.addEventListener('submit', function (e) {
+            if (!inputTamanho.value) {
+                e.preventDefault();
+                avisoTamanho.style.display = 'block';
+            }
+        });
+    }
+
+    // ============================================
+    // Estrelas clicáveis no formulário de avaliação
+    // ============================================
+    const estrelasInput = document.getElementById('estrelas-input');
+    if (estrelasInput) {
+        const inputEstrelas = document.getElementById('input-estrelas');
+        const spans = estrelasInput.querySelectorAll('span');
+
+        function marcarEstrelas(valor) {
+            spans.forEach(function (s) {
+                s.classList.toggle('ativa', parseInt(s.dataset.valor, 10) <= valor);
+            });
+        }
+        marcarEstrelas(5); // valor por omissão
+
+        spans.forEach(function (s) {
+            s.addEventListener('mouseenter', function () { marcarEstrelas(parseInt(s.dataset.valor, 10)); });
+            s.addEventListener('click', function () {
+                const valor = parseInt(s.dataset.valor, 10);
+                inputEstrelas.value = valor;
+                marcarEstrelas(valor);
+            });
+        });
+        estrelasInput.addEventListener('mouseleave', function () {
+            marcarEstrelas(parseInt(inputEstrelas.value, 10));
+        });
+    }
+
+    // ============================================
+    // Devoluções (só existe em devolucoes.php)
+    // ============================================
+    const btnProcurarEncomenda = document.getElementById('btn-procurar-encomenda');
+    if (btnProcurarEncomenda) {
+        const passo1 = document.getElementById('devolucao-passo-1');
+        const passo2 = document.getElementById('devolucao-passo-2');
+        const passo3 = document.getElementById('devolucao-passo-3');
+        const msg1 = document.getElementById('devolucao-msg-passo-1');
+        const msg2 = document.getElementById('devolucao-msg-passo-2');
+        let numeroAtual = null;
+        let emailAtual = null;
+
+        btnProcurarEncomenda.addEventListener('click', function () {
+            const numero = document.getElementById('devolucao-numero').value.trim();
+            const email = document.getElementById('devolucao-email').value.trim();
+            msg1.textContent = '';
+            msg1.className = 'devolucao-msg';
+
+            if (!numero || !email) {
+                msg1.textContent = 'Preenche o número da encomenda e o email.';
+                msg1.className = 'devolucao-msg erro';
+                return;
+            }
+
+            const dados = new FormData();
+            dados.append('numero_encomenda', numero);
+            dados.append('email', email);
+
+            fetch('actions/devolucao_procurar.php', { method: 'POST', body: dados })
+                .then(function (r) { return r.json(); })
+                .then(function (resposta) {
+                    if (!resposta.sucesso) {
+                        msg1.textContent = resposta.erro;
+                        msg1.className = 'devolucao-msg erro';
+                        return;
+                    }
+
+                    numeroAtual = resposta.encomenda_id;
+                    emailAtual = resposta.email;
+                    document.getElementById('devolucao-numero-confirmado').textContent = '#' + String(numeroAtual).padStart(5, '0');
+
+                    const lista = document.getElementById('devolucao-lista-itens');
+                    lista.innerHTML = resposta.itens.map(function (item) {
+                        const detalhe = item.quantidade + '× ' + (item.tamanho ? ' (Tamanho ' + item.tamanho + ')' : '');
+                        if (item.ja_pedida) {
+                            return '<div class="devolucao-item-linha">' +
+                                '<span class="nome">' + item.nome + '</span>' +
+                                '<span class="detalhe">' + detalhe + '</span>' +
+                                '<span class="ja-pedida">Já pedida</span></div>';
+                        }
+                        return '<div class="devolucao-item-linha">' +
+                            '<input type="checkbox" value="' + item.id + '" class="devolucao-item-checkbox">' +
+                            '<span class="nome">' + item.nome + '</span>' +
+                            '<span class="detalhe">' + detalhe + '</span></div>';
+                    }).join('');
+
+                    passo1.style.display = 'none';
+                    passo2.style.display = 'block';
+                })
+                .catch(function () {
+                    msg1.textContent = 'Não foi possível ligar ao servidor. Tenta novamente.';
+                    msg1.className = 'devolucao-msg erro';
+                });
+        });
+
+        const btnVoltar = document.getElementById('btn-devolucao-voltar');
+        if (btnVoltar) {
+            btnVoltar.addEventListener('click', function () {
+                passo2.style.display = 'none';
+                passo1.style.display = 'block';
+            });
+        }
+
+        const btnConfirmarDevolucao = document.getElementById('btn-confirmar-devolucao');
+        if (btnConfirmarDevolucao) {
+            btnConfirmarDevolucao.addEventListener('click', function () {
+                const selecionados = Array.from(document.querySelectorAll('.devolucao-item-checkbox:checked')).map(function (c) { return c.value; });
+                const motivo = document.getElementById('devolucao-motivo').value.trim();
+                msg2.textContent = '';
+                msg2.className = 'devolucao-msg';
+
+                if (selecionados.length === 0) {
+                    msg2.textContent = 'Escolhe pelo menos um produto para devolver.';
+                    msg2.className = 'devolucao-msg erro';
+                    return;
+                }
+                if (!motivo) {
+                    msg2.textContent = 'Explica o motivo da devolução.';
+                    msg2.className = 'devolucao-msg erro';
+                    return;
+                }
+
+                const dados = new FormData();
+                dados.append('numero_encomenda', numeroAtual);
+                dados.append('email', emailAtual);
+                dados.append('motivo', motivo);
+                selecionados.forEach(function (id) { dados.append('itens[]', id); });
+
+                fetch('actions/devolucao_criar.php', { method: 'POST', body: dados })
+                    .then(function (r) { return r.json(); })
+                    .then(function (resposta) {
+                        if (!resposta.sucesso) {
+                            msg2.textContent = resposta.erro;
+                            msg2.className = 'devolucao-msg erro';
+                            return;
+                        }
+                        passo2.style.display = 'none';
+                        passo3.style.display = 'block';
+                    })
+                    .catch(function () {
+                        msg2.textContent = 'Não foi possível ligar ao servidor. Tenta novamente.';
+                        msg2.className = 'devolucao-msg erro';
+                    });
+            });
+        }
+    }
+
+    // ============================================
+    // Chat privado (widget presente em todas as páginas)
+    // ============================================
+    const chatBotao = document.getElementById('chat-botao');
+    if (chatBotao) {
+        const chatPainel = document.getElementById('chat-painel');
+        const chatFormInicial = document.getElementById('chat-form-inicial');
+        const chatMensagensEl = document.getElementById('chat-mensagens');
+        const chatFormEnviar = document.getElementById('chat-form-enviar');
+        const chatInputMensagem = document.getElementById('chat-input-mensagem');
+
+        let conversaId = localStorage.getItem('northside_chat_conversa_id');
+        let ultimoIdMensagem = 0;
+        let intervaloPolling = null;
+
+        function renderizarMensagem(m) {
+            const bolha = document.createElement('div');
+            bolha.className = 'chat-bolha ' + m.remetente;
+            bolha.innerHTML = m.mensagem + '<span class="hora">' + m.hora + '</span>';
+            chatMensagensEl.appendChild(bolha);
+            chatMensagensEl.scrollTop = chatMensagensEl.scrollHeight;
+            if (m.id > ultimoIdMensagem) ultimoIdMensagem = m.id;
+        }
+
+        function irBuscarMensagensNovas() {
+            if (!conversaId) return;
+            fetch('actions/chat_mensagens.php?conversa_id=' + conversaId + '&depois_de=' + ultimoIdMensagem)
+                .then(function (r) { return r.json(); })
+                .then(function (resposta) {
+                    if (resposta.sucesso) resposta.mensagens.forEach(renderizarMensagem);
+                })
+                .catch(function () { /* silencioso — tenta outra vez no próximo intervalo */ });
+        }
+
+        function mostrarConversa() {
+            chatFormInicial.style.display = 'none';
+            chatMensagensEl.style.display = 'flex';
+            chatFormEnviar.style.display = 'flex';
+            irBuscarMensagensNovas();
+            clearInterval(intervaloPolling);
+            intervaloPolling = setInterval(irBuscarMensagensNovas, 4000);
+        }
+
+        chatBotao.addEventListener('click', function () {
+            chatPainel.classList.add('aberto');
+            if (conversaId) mostrarConversa();
+        });
+
+        document.getElementById('chat-fechar').addEventListener('click', function () {
+            chatPainel.classList.remove('aberto');
+            clearInterval(intervaloPolling);
+        });
+
+        const btnChatIniciar = document.getElementById('btn-chat-iniciar');
+        if (btnChatIniciar) {
+            btnChatIniciar.addEventListener('click', function () {
+                const nome = document.getElementById('chat-nome').value.trim();
+                const email = document.getElementById('chat-email').value.trim();
+                if (!nome || !email) return;
+
+                const dados = new FormData();
+                dados.append('nome', nome);
+                dados.append('email', email);
+
+                fetch('actions/chat_iniciar.php', { method: 'POST', body: dados })
+                    .then(function (r) { return r.json(); })
+                    .then(function (resposta) {
+                        if (!resposta.sucesso) return;
+                        conversaId = resposta.conversa_id;
+                        localStorage.setItem('northside_chat_conversa_id', conversaId);
+                        mostrarConversa();
+                    });
+            });
+        }
+
+        chatFormEnviar.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const texto = chatInputMensagem.value.trim();
+            if (!texto || !conversaId) return;
+
+            renderizarMensagem({ id: ultimoIdMensagem, remetente: 'cliente', mensagem: texto, hora: new Date().toTimeString().slice(0, 5) });
+            chatInputMensagem.value = '';
+
+            const dados = new FormData();
+            dados.append('conversa_id', conversaId);
+            dados.append('mensagem', texto);
+            fetch('actions/chat_enviar.php', { method: 'POST', body: dados });
         });
     }
 

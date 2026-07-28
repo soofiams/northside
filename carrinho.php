@@ -30,26 +30,37 @@ require __DIR__ . '/includes/header.php';
             <tr><th>Produto</th><th>Preço</th><th>Quantidade</th><th>Subtotal</th><th></th></tr>
         </thead>
         <tbody>
-            <?php foreach ($itens as $item): $p = $item['produto']; ?>
+            <?php foreach ($itens as $item): $p = $item['produto']; $stockLinha = $item['tamanho'] ? null : (int)$p['stock']; ?>
+                <?php
+                    // stock máximo permitido para esta linha (produto simples ou com tamanho)
+                    $maxLinha = $item['tamanho']
+                        ? (buscarStockTamanho($pdo, $p['id'], $item['tamanho']) ?? 0)
+                        : (int)$p['stock'];
+                ?>
                 <tr>
                     <td data-label="">
                         <div class="carrinho-item-nome">
                             <img src="<?= imagemProdutoUrl($p['imagem']) ?>" alt="">
-                            <a href="produto.php?id=<?= $p['id'] ?>"><strong><?= htmlspecialchars($p['nome']) ?></strong></a>
+                            <a href="produto.php?id=<?= $p['id'] ?>">
+                                <strong><?= htmlspecialchars($p['nome']) ?></strong>
+                                <?php if ($item['tamanho']): ?>
+                                    <span style="color:var(--cinza-texto);font-weight:400;"> — Tamanho <?= htmlspecialchars($item['tamanho']) ?></span>
+                                <?php endif; ?>
+                            </a>
                         </div>
                     </td>
                     <td data-label="Preço"><?= formatarPreco($p['preco']) ?></td>
                     <td data-label="Quantidade">
                         <form action="actions/carrinho_update.php" method="post" style="display:flex;gap:8px;align-items:center;">
-                            <input type="hidden" name="produto_id" value="<?= $p['id'] ?>">
-                            <input type="number" name="quantidade" value="<?= $item['quantidade'] ?>" min="1" max="<?= (int)$p['stock'] ?>" class="input-qtd" style="width:60px;">
+                            <input type="hidden" name="chave" value="<?= htmlspecialchars($item['chave']) ?>">
+                            <input type="number" name="quantidade" value="<?= $item['quantidade'] ?>" min="1" max="<?= $maxLinha ?>" class="input-qtd" style="width:60px;">
                             <button type="submit" class="btn-outline-northside" style="padding:6px 12px;font-size:0.72rem;">Atualizar</button>
                         </form>
                     </td>
                     <td data-label="Subtotal"><strong><?= formatarPreco($item['subtotal']) ?></strong></td>
                     <td>
                         <form action="actions/carrinho_remove.php" method="post">
-                            <input type="hidden" name="produto_id" value="<?= $p['id'] ?>">
+                            <input type="hidden" name="chave" value="<?= htmlspecialchars($item['chave']) ?>">
                             <button type="submit" class="btn-remover">Remover</button>
                         </form>
                     </td>

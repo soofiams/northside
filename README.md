@@ -10,8 +10,9 @@ Copia toda esta pasta para o teu XAMPP/Laragon:
 
 ## 2. Criar a base de dados
 
-1. Abre o **phpMyAdmin**
-2. Importa o ficheiro `database/schema.sql` — cria a base de dados `northside`, todas as tabelas, os 10 produtos, as avaliações de exemplo e 3 códigos de desconto (`NORTHSIDE10`, `BEMVINDO15`, `PORTO20`)
+**Instalação nova:** importa `database/schema.sql` no phpMyAdmin — cria a base de dados `northside`, todas as tabelas, os produtos, avaliações de exemplo, códigos de desconto e tamanhos de roupa.
+
+**Já tinhas a base de dados de antes?** Em vez de reimportar tudo (o que apagaria as tuas encomendas de teste), corre só o `database/migracao_2.sql` — adiciona as tabelas novas (tamanhos, contactos) sem tocar no resto.
 
 ## 3. Configurar `config.php`
 
@@ -24,7 +25,7 @@ define('DB_USER', 'root');      // o teu utilizador MySQL
 define('DB_PASS', '');          // a tua password MySQL
 ```
 
-Se a loja não estiver na raiz do site, ajusta também `URL_BASE` (ex: `/northside/`).
+Não precisas de configurar o caminho da loja (`URL_BASE`) — é detetado automaticamente a partir da pasta onde colocaste o projeto, seja qual for o nome que lhe deres.
 
 ## 4. Configurar o envio de email (SMTP)
 
@@ -66,6 +67,24 @@ Se preferires outro serviço (Outlook, um SMTP do teu hosting, Mailtrap para tes
 | Código de desconto fixo no JS | Código validado no servidor, contra a tabela `codigos_desconto` |
 | "Email enviado" era só uma mensagem no ecrã | Email real, enviado por SMTP via PHPMailer |
 | Pesquisa/categoria filtradas no browser | Filtradas com uma query SQL no servidor |
+
+## Novidades desta versão
+
+- **Contactos editáveis**: o email e telemóvel que aparecem no modal "Contactos" vêm da tabela `definicoes` — para os alterar, edita a linha correspondente nessa tabela (via phpMyAdmin, por agora; mais tarde terá um formulário no backoffice):
+  ```sql
+  UPDATE definicoes SET valor = 'novo@email.com' WHERE chave = 'contacto_email';
+  UPDATE definicoes SET valor = '+351 91 234 5678' WHERE chave = 'contacto_telefone';
+  ```
+- **Política de Privacidade**: modal próprio, acessível a partir do rodapé.
+- **Tamanhos de roupa**: os produtos Hoodie, Camisola e T-shirt têm agora tamanhos XS a XXL, cada um com o seu próprio stock (tabela `produto_tamanhos`). Um tamanho sem stock aparece riscado e não pode ser escolhido.
+- **Avaliação depois da compra**: cada página de produto tem um formulário para deixar uma avaliação (nome, estrelas, comentário). Depois de confirmares uma encomenda, aparecem atalhos diretos para avaliares os produtos que acabaste de comprar.
+
+## Novidades desta versão
+
+- **Devoluções**: página `devolucoes.php` — o cliente introduz o número da encomenda + o email da compra, escolhe os produtos que quer devolver e o motivo. Fica gravado na tabela `devolucoes` (por agora sem um ecrã de gestão — isso entra no backoffice).
+- **Chat privado**: um botão flutuante em todas as páginas abre uma conversa entre o cliente e a Northside. Da primeira vez pede nome e email; depois disso, guarda a conversa no browser do cliente (`localStorage`) e mantém o histórico mesmo que ele saia e volte ao site. As respostas da equipa Northside também vão precisar de um ecrã no backoffice — por agora, as mensagens ficam gravadas em `chat_mensagens`, prontas a responder assim que esse ecrã existir.
+
+**Se já tens a base de dados de antes**, corre o `database/migracao_3.sql` no phpMyAdmin (cria só as tabelas novas de devoluções e chat, sem tocar no resto).
 
 ## Estrutura
 

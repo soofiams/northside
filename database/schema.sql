@@ -45,6 +45,22 @@ CREATE TABLE IF NOT EXISTS avaliacoes (
     FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+-- ===== Tamanhos por produto (roupa: XS a XXL), com stock próprio por tamanho =====
+CREATE TABLE IF NOT EXISTS produto_tamanhos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    produto_id INT NOT NULL,
+    tamanho ENUM('XS','S','M','L','XL','XXL') NOT NULL,
+    stock INT NOT NULL DEFAULT 0,
+    UNIQUE KEY produto_tamanho_unico (produto_id, tamanho),
+    FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ===== Definições gerais do site, editáveis sem mexer no código (ex: contactos) =====
+CREATE TABLE IF NOT EXISTS definicoes (
+    chave VARCHAR(60) PRIMARY KEY,
+    valor TEXT NOT NULL
+) ENGINE=InnoDB;
+
 -- ===== Códigos de desconto =====
 CREATE TABLE IF NOT EXISTS codigos_desconto (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,6 +101,7 @@ CREATE TABLE IF NOT EXISTS encomenda_itens (
     preco_unitario DECIMAL(10,2) NOT NULL,
     quantidade INT NOT NULL,
     subtotal DECIMAL(10,2) NOT NULL,
+    tamanho VARCHAR(5) NULL,
     FOREIGN KEY (encomenda_id) REFERENCES encomendas(id) ON DELETE CASCADE,
     FOREIGN KEY (produto_id) REFERENCES produtos(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
@@ -94,6 +111,37 @@ CREATE TABLE IF NOT EXISTS newsletter_subscritores (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(150) NOT NULL UNIQUE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- ===== Devoluções =====
+CREATE TABLE IF NOT EXISTS devolucoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    encomenda_id INT NOT NULL,
+    encomenda_item_id INT NOT NULL,
+    motivo TEXT NOT NULL,
+    estado ENUM('pendente','aprovada','rejeitada','concluida') NOT NULL DEFAULT 'pendente',
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (encomenda_id) REFERENCES encomendas(id) ON DELETE CASCADE,
+    FOREIGN KEY (encomenda_item_id) REFERENCES encomenda_itens(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ===== Chat privado entre cliente e Northside =====
+CREATE TABLE IF NOT EXISTS chat_conversas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ultima_atividade TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS chat_mensagens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    conversa_id INT NOT NULL,
+    remetente ENUM('cliente','northside') NOT NULL,
+    mensagem TEXT NOT NULL,
+    lida TINYINT(1) NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (conversa_id) REFERENCES chat_conversas(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- ===== Administradores do backoffice (criados via admin/setup.php, numa fase seguinte) =====
@@ -153,5 +201,17 @@ INSERT INTO codigos_desconto (codigo, percentagem, ativo) VALUES
 ('NORTHSIDE10', 0.10, 1),
 ('BEMVINDO15', 0.15, 1),
 ('PORTO20', 0.20, 1);
+
+-- Tamanhos da roupa (produtos 8=Hoodie, 9=Camisola, 10=T-shirt).
+-- Alguns tamanhos ficam a 0 de propósito, para veres o "Indisponível" em ação.
+INSERT INTO produto_tamanhos (produto_id, tamanho, stock) VALUES
+(8, 'XS', 4), (8, 'S', 10), (8, 'M', 12), (8, 'L', 8), (8, 'XL', 0), (8, 'XXL', 3),
+(9, 'XS', 6), (9, 'S', 9), (9, 'M', 11), (9, 'L', 0), (9, 'XL', 5), (9, 'XXL', 0),
+(10, 'XS', 12), (10, 'S', 15), (10, 'M', 18), (10, 'L', 14), (10, 'XL', 9), (10, 'XXL', 0);
+
+-- Contactos (editáveis aqui, ou mais tarde através do backoffice)
+INSERT INTO definicoes (chave, valor) VALUES
+('contacto_email', 'apoio@northside.pt'),
+('contacto_telefone', '+351 900 000 000');
 
 -- Nota: a conta de administrador é criada mais tarde através de admin/setup.php (fase do backoffice)
