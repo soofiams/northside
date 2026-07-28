@@ -386,6 +386,18 @@ function calcularEnvio(PDO $pdo, float $subtotal): float {
 }
 
 // ============================================
+// Backoffice — contagens para os avisos da sidebar
+// ============================================
+
+function contarDevolucoesPendentes(PDO $pdo): int {
+    return (int)$pdo->query("SELECT COUNT(*) FROM devolucoes WHERE estado = 'pendente'")->fetchColumn();
+}
+
+function contarMensagensChatNaoLidas(PDO $pdo): int {
+    return (int)$pdo->query("SELECT COUNT(*) FROM chat_mensagens WHERE remetente = 'cliente' AND lida = 0")->fetchColumn();
+}
+
+// ============================================
 // Devoluções
 // ============================================
 
@@ -454,4 +466,19 @@ function buscarMensagensChat(PDO $pdo, int $conversaId, int $depoisDeId = 0): ar
     );
     $stmt->execute(['conversa_id' => $conversaId, 'depois_de' => $depoisDeId]);
     return $stmt->fetchAll();
+}
+
+function marcarMensagensComoLidas(PDO $pdo, int $conversaId): void {
+    $stmt = $pdo->prepare("UPDATE chat_mensagens SET lida = 1 WHERE conversa_id = :id AND remetente = 'cliente'");
+    $stmt->execute(['id' => $conversaId]);
+}
+
+function listarConversasChat(PDO $pdo): array {
+    return $pdo->query(
+        "SELECT c.*,
+            (SELECT mensagem FROM chat_mensagens m WHERE m.conversa_id = c.id ORDER BY m.id DESC LIMIT 1) AS ultima_mensagem,
+            (SELECT COUNT(*) FROM chat_mensagens m WHERE m.conversa_id = c.id AND m.remetente = 'cliente' AND m.lida = 0) AS nao_lidas
+         FROM chat_conversas c
+         ORDER BY c.ultima_atividade DESC"
+    )->fetchAll();
 }

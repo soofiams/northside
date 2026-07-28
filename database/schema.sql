@@ -214,6 +214,9 @@ INSERT INTO definicoes (chave, valor) VALUES
 ('contacto_email', 'apoio@northside.pt'),
 ('contacto_telefone', '+351 900 000 000'),
 ('envio_gratis_acima_de', '50.00'),
-('envio_custo', '4.99');
+('envio_custo', '4.99'),
+('rede_instagram', 'https://instagram.com/northside'),
+('rede_facebook', 'https://facebook.com/northside'),
+('rede_tiktok', 'https://tiktok.com/@northside');
 
 -- Nota: a conta de administrador é criada mais tarde através de admin/setup.php (fase do backoffice)

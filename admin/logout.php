@@ -1,5 +1,5 @@
 <?php
 require_once __DIR__ . '/../config.php';
-session_destroy();
+unset($_SESSION['admin_id'], $_SESSION['admin_utilizador']);
 header('Location: login.php');
 exit;

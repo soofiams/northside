@@ -12,14 +12,19 @@ if ($nome === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     exit;
 }
 
-$conversaId = criarConversaChat($pdo, $nome, $email);
+try {
+    $conversaId = criarConversaChat($pdo, $nome, $email);
 
-// mensagem automática de boas-vindas
-criarMensagemChat(
-    $pdo,
-    $conversaId,
-    'northside',
-    'Olá ' . $nome . '! 👋 Em que podemos ajudar? A nossa equipa responde o mais rápido possível.'
-);
+    // mensagem automática de boas-vindas
+    criarMensagemChat(
+        $pdo,
+        $conversaId,
+        'northside',
+        'Olá ' . $nome . '! 👋 Em que podemos ajudar? A nossa equipa responde o mais rápido possível.'
+    );
 
-echo json_encode(['sucesso' => true, 'conversa_id' => $conversaId]);
+    echo json_encode(['sucesso' => true, 'conversa_id' => $conversaId]);
+} catch (PDOException $e) {
+    error_log('Erro ao iniciar conversa de chat: ' . $e->getMessage());
+    echo json_encode(['sucesso' => false, 'erro' => 'Não foi possível iniciar a conversa. Verifica se a migração do chat (database/migracao_3.sql) já foi corrida.']);
+}

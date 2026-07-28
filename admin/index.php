@@ -1,71 +1,83 @@
 <?php
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/functions.php';
-$titulo_pagina = 'Produtos';
+$titulo_admin = 'Painel';
 
-$stmt = $pdo->query(
-    "SELECT p.*, c.nome AS categoria_nome
-     FROM produtos p
-     LEFT JOIN categorias c ON c.id = p.categoria_id
-     ORDER BY p.criado_em DESC"
-);
-$produtos = $stmt->fetchAll();
+$totalEncomendas = (int)$pdo->query("SELECT COUNT(*) FROM encomendas")->fetchColumn();
+$totalFaturado = (float)$pdo->query("SELECT COALESCE(SUM(total),0) FROM encomendas")->fetchColumn();
+$encomendasHoje = (int)$pdo->query("SELECT COUNT(*) FROM encomendas WHERE DATE(criado_em) = CURDATE()")->fetchColumn();
+$totalProdutos = (int)$pdo->query("SELECT COUNT(*) FROM produtos WHERE ativo = 1")->fetchColumn();
+$produtosEsgotados = (int)$pdo->query(
+    "SELECT COUNT(*) FROM produtos p WHERE p.ativo = 1 AND p.stock = 0
+     AND NOT EXISTS (SELECT 1 FROM produto_tamanhos pt WHERE pt.produto_id = p.id AND pt.stock > 0)"
+)->fetchColumn();
+$devolucoesPendentes = contarDevolucoesPendentes($pdo);
+$mensagensNaoLidas = contarMensagensChatNaoLidas($pdo);
+
+$ultimasEncomendas = $pdo->query("SELECT * FROM encomendas ORDER BY criado_em DESC LIMIT 6")->fetchAll();
 
 require __DIR__ . '/includes/admin_header.php';
 ?>
 
-<div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0;">
-    <h2 style="margin:0;">Produtos (<?= count($produtos) ?>)</h2>
-    <a href="produto_form.php" class="btn-northside">+ NOVO PRODUTO</a>
+<div class="admin-topo">
+    <h1>Olá, <?= htmlspecialchars($_SESSION['admin_utilizador']) ?> 👋</h1>
 </div>
 
-<?php if (!empty($_GET['msg'])): ?>
-    <div class="alerta alerta-sucesso"><?= htmlspecialchars($_GET['msg']) ?></div>
-<?php endif; ?>
+<div class="admin-cartoes">
+    <div class="admin-cartao">
+        <div class="numero"><?= $totalEncomendas ?></div>
+        <div class="rotulo">Encomendas no total</div>
+    </div>
+    <div class="admin-cartao">
+        <div class="numero"><?= formatarPreco($totalFaturado) ?></div>
+        <div class="rotulo">Faturado no total</div>
+    </div>
+    <div class="admin-cartao">
+        <div class="numero"><?= $encomendasHoje ?></div>
+        <div class="rotulo">Encomendas hoje</div>
+    </div>
+    <div class="admin-cartao">
+        <div class="numero"><?= $totalProdutos ?></div>
+        <div class="rotulo">Produtos ativos</div>
+    </div>
+    <div class="admin-cartao <?= $produtosEsgotados > 0 ? 'alerta' : '' ?>">
+        <div class="numero"><?= $produtosEsgotados ?></div>
+        <div class="rotulo">Produtos esgotados</div>
+    </div>
+    <div class="admin-cartao <?= $devolucoesPendentes > 0 ? 'alerta' : '' ?>">
+        <div class="numero"><?= $devolucoesPendentes ?></div>
+        <div class="rotulo">Devoluções pendentes</div>
+    </div>
+    <div class="admin-cartao <?= $mensagensNaoLidas > 0 ? 'alerta' : '' ?>">
+        <div class="numero"><?= $mensagensNaoLidas ?></div>
+        <div class="rotulo">Mensagens de chat por ler</div>
+    </div>
+</div>
 
+<div class="admin-painel">
+    <h2>Últimas encomendas</h2>
+    <div class="admin-tabela-scroll">
 <table class="admin-tabela">
-    <thead>
-        <tr>
-            <th>Imagem</th>
-            <th>Nome</th>
-            <th>Categoria</th>
-            <th>Preço</th>
-            <th>Stock</th>
-            <th>Destaque</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($produtos as $p): ?>
-        <tr>
-            <td><img src="<?= imagem_produto_url($p['imagem']) ?>" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:4px;background:#f5f6f8;"></td>
-            <td><?= htmlspecialchars($p['nome']) ?></td>
-            <td><?= htmlspecialchars($p['categoria_nome'] ?? '—') ?></td>
-            <td><?= formatar_preco($p['preco']) ?></td>
-            <td>
-                <?php if ($p['stock'] > 0): ?>
-                    <span class="pill pill-ok"><?= $p['stock'] ?> un.</span>
-                <?php else: ?>
-                    <span class="pill pill-esgotado">Esgotado</span>
-                <?php endif; ?>
-            </td>
-            <td><?= $p['destaque'] ? '⭐' : '—' ?></td>
-            <td><?= $p['ativo'] ? '✅' : '🚫' ?></td>
-            <td style="white-space:nowrap;">
-                <a href="produto_form.php?id=<?= $p['id'] ?>">Editar</a>
-                &nbsp;·&nbsp;
-                <form action="produto_delete.php" method="post" style="display:inline;" onsubmit="return confirm('Tens a certeza que queres eliminar este produto?');">
-                    <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                    <button type="submit" class="btn-remover" style="padding:0;">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        <?php endforeach; ?>
-        <?php if (empty($produtos)): ?>
-        <tr><td colspan="8" style="text-align:center;padding:30px;">Ainda não tens produtos. Cria o primeiro!</td></tr>
-        <?php endif; ?>
-    </tbody>
-</table>
+        <thead>
+            <tr><th>Nº</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Data</th><th></th></tr>
+        </thead>
+        <tbody>
+            <?php foreach ($ultimasEncomendas as $enc): ?>
+                <tr>
+                    <td>#<?= str_pad($enc['id'], 5, '0', STR_PAD_LEFT) ?></td>
+                    <td><?= htmlspecialchars($enc['nome_cliente']) ?></td>
+                    <td><strong><?= formatarPreco($enc['total']) ?></strong></td>
+                    <td><span class="pill pill-ok"><?= htmlspecialchars($enc['estado']) ?></span></td>
+                    <td><?= date('d/m/Y H:i', strtotime($enc['criado_em'])) ?></td>
+                    <td><a href="encomenda_detalhe.php?id=<?= $enc['id'] ?>" class="admin-acoes editar">Ver</a></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if (empty($ultimasEncomendas)): ?>
+                <tr><td colspan="6" style="text-align:center;color:var(--cinza-texto);padding:24px;">Ainda não há encomendas.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+</div>
 
 <?php require __DIR__ . '/includes/admin_footer.php'; ?>

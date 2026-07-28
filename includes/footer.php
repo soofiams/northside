@@ -25,9 +25,9 @@
                 <a href="#" data-abrir-modal="modal-contactos">Contactos</a>
             </nav>
             <div class="footer-social">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="<?= htmlspecialchars(buscarDefinicao($pdo, 'rede_instagram', '#')) ?>" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                <a href="<?= htmlspecialchars(buscarDefinicao($pdo, 'rede_facebook', '#')) ?>" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                <a href="<?= htmlspecialchars(buscarDefinicao($pdo, 'rede_tiktok', '#')) ?>" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
             </div>
         </div>
         <div class="footer-bottom">

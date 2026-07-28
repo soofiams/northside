@@ -12,12 +12,17 @@ if (!$conversaId || $mensagem === '') {
     exit;
 }
 
-$conversa = buscarConversaChat($pdo, $conversaId);
-if (!$conversa) {
-    echo json_encode(['sucesso' => false, 'erro' => 'Conversa não encontrada.']);
-    exit;
+try {
+    $conversa = buscarConversaChat($pdo, $conversaId);
+    if (!$conversa) {
+        // a conversa guardada no browser já não existe (ex: base de dados foi reiniciada)
+        echo json_encode(['sucesso' => false, 'erro' => 'conversa_invalida']);
+        exit;
+    }
+
+    criarMensagemChat($pdo, $conversaId, 'cliente', $mensagem);
+    echo json_encode(['sucesso' => true]);
+} catch (PDOException $e) {
+    error_log('Erro ao enviar mensagem de chat: ' . $e->getMessage());
+    echo json_encode(['sucesso' => false, 'erro' => 'Não foi possível enviar a mensagem. Tenta novamente.']);
 }
-
-criarMensagemChat($pdo, $conversaId, 'cliente', $mensagem);
-
-echo json_encode(['sucesso' => true]);

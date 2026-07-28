@@ -426,6 +426,33 @@ document.addEventListener('DOMContentLoaded', function () {
         let ultimoIdMensagem = 0;
         let intervaloPolling = null;
 
+        function mostrarAvisoChat(texto) {
+            let aviso = document.getElementById('chat-aviso-erro');
+            if (!aviso) {
+                aviso = document.createElement('div');
+                aviso.id = 'chat-aviso-erro';
+                aviso.style.cssText = 'padding:10px 16px;background:#fbe7e7;color:#c22b2b;font-size:0.78rem;text-align:center;';
+                chatPainel.insertBefore(aviso, chatMensagensEl);
+            }
+            aviso.textContent = texto;
+            aviso.style.display = 'block';
+            setTimeout(function () { aviso.style.display = 'none'; }, 4000);
+        }
+
+        // Esquece a conversa guardada e volta a mostrar o formulário inicial
+        // (usado quando a conversa já não existe do lado do servidor)
+        function reiniciarConversa() {
+            localStorage.removeItem('northside_chat_conversa_id');
+            conversaId = null;
+            ultimoIdMensagem = 0;
+            clearInterval(intervaloPolling);
+            chatMensagensEl.innerHTML = '';
+            chatMensagensEl.style.display = 'none';
+            chatFormEnviar.style.display = 'none';
+            chatFormInicial.style.display = 'block';
+            mostrarAvisoChat('A tua conversa anterior já não está disponível. Começa uma nova abaixo.');
+        }
+
         function renderizarMensagem(m) {
             const bolha = document.createElement('div');
             bolha.className = 'chat-bolha ' + m.remetente;
@@ -440,9 +467,13 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch('actions/chat_mensagens.php?conversa_id=' + conversaId + '&depois_de=' + ultimoIdMensagem)
                 .then(function (r) { return r.json(); })
                 .then(function (resposta) {
-                    if (resposta.sucesso) resposta.mensagens.forEach(renderizarMensagem);
+                    if (resposta.sucesso) {
+                        resposta.mensagens.forEach(renderizarMensagem);
+                    } else if (resposta.erro === 'conversa_invalida') {
+                        reiniciarConversa();
+                    }
                 })
-                .catch(function () { /* silencioso — tenta outra vez no próximo intervalo */ });
+                .catch(function () { /* falha de rede pontual — tenta outra vez no próximo intervalo */ });
         }
 
         function mostrarConversa() {
@@ -469,7 +500,13 @@ document.addEventListener('DOMContentLoaded', function () {
             btnChatIniciar.addEventListener('click', function () {
                 const nome = document.getElementById('chat-nome').value.trim();
                 const email = document.getElementById('chat-email').value.trim();
-                if (!nome || !email) return;
+                if (!nome || !email) {
+                    mostrarAvisoChat('Preenche o nome e o email.');
+                    return;
+                }
+
+                btnChatIniciar.disabled = true;
+                btnChatIniciar.textContent = 'A ligar...';
 
                 const dados = new FormData();
                 dados.append('nome', nome);
@@ -478,10 +515,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 fetch('actions/chat_iniciar.php', { method: 'POST', body: dados })
                     .then(function (r) { return r.json(); })
                     .then(function (resposta) {
-                        if (!resposta.sucesso) return;
+                        btnChatIniciar.disabled = false;
+                        btnChatIniciar.textContent = 'COMEÇAR CONVERSA';
+                        if (!resposta.sucesso) {
+                            mostrarAvisoChat(resposta.erro || 'Não foi possível iniciar a conversa.');
+                            return;
+                        }
                         conversaId = resposta.conversa_id;
                         localStorage.setItem('northside_chat_conversa_id', conversaId);
                         mostrarConversa();
+                    })
+                    .catch(function () {
+                        btnChatIniciar.disabled = false;
+                        btnChatIniciar.textContent = 'COMEÇAR CONVERSA';
+                        mostrarAvisoChat('Não foi possível ligar ao servidor. Tenta novamente.');
                     });
             });
         }
@@ -497,7 +544,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const dados = new FormData();
             dados.append('conversa_id', conversaId);
             dados.append('mensagem', texto);
-            fetch('actions/chat_enviar.php', { method: 'POST', body: dados });
+
+            fetch('actions/chat_enviar.php', { method: 'POST', body: dados })
+                .then(function (r) { return r.json(); })
+                .then(function (resposta) {
+                    if (!resposta.sucesso) {
+                        if (resposta.erro === 'conversa_invalida') {
+                            reiniciarConversa();
+                        } else {
+                            mostrarAvisoChat('A mensagem não chegou a enviar-se. Tenta outra vez.');
+                        }
+                    }
+                })
+                .catch(function () {
+                    mostrarAvisoChat('Não foi possível ligar ao servidor. A mensagem não foi enviada.');
+                });
         });
     }
 

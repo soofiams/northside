@@ -102,6 +102,21 @@ Se preferires outro serviço (Outlook, um SMTP do teu hosting, Mailtrap para tes
 
 **Se já tens a base de dados de antes**, corre o `database/migracao_4.sql` no phpMyAdmin.
 
+## Backoffice (painel de administração)
+
+Acede a `http://localhost/[a-tua-pasta]/admin/setup.php` **uma única vez** para criares a tua conta — depois disso, apaga o ficheiro `admin/setup.php` do servidor por segurança.
+
+Depois, entra em `admin/login.php`. O painel tem:
+
+- **Painel** — estatísticas gerais (encomendas, faturação, produtos esgotados, devoluções e mensagens de chat pendentes)
+- **Produtos** — criar, editar, eliminar; upload de imagem; especificações (garantia, material, etc.) editáveis livremente; tamanhos e stock por tamanho para a roupa
+- **Encomendas** — ver todos os dados do cliente, os produtos comprados, e mudar o estado (pendente → confirmada → enviada → entregue)
+- **Devoluções** — ver os pedidos dos clientes e aprovar/rejeitar
+- **Códigos de Desconto** — criar, editar, eliminar, definir percentagem e validade
+- **Avaliações** — mostrar/ocultar ou eliminar avaliações
+- **Chat** — responder às conversas dos clientes em tempo real (atualiza automaticamente a cada poucos segundos)
+- **Definições** — email e telemóvel de contacto, limiar de portes grátis, e custo de envio — os mesmos valores que já eram editáveis por SQL, agora com um formulário simples
+
 ## Estrutura
 
 ```
