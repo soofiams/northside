@@ -45,7 +45,7 @@ function buscarDefinicao(PDO $pdo, string $chave, string $default = ''): string 
 // ============================================
 
 function buscarCategorias(PDO $pdo): array {
-    return $pdo->query("SELECT * FROM categorias ORDER BY nome")->fetchAll();
+    return $pdo->query("SELECT * FROM categorias ORDER BY ordem ASC, nome ASC")->fetchAll();
 }
 
 function buscarProdutos(PDO $pdo, array $filtros = []): array {

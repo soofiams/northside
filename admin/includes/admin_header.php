@@ -34,6 +34,7 @@ function navAtivo(string $ficheiro, string $atual): string {
         <nav class="admin-nav">
             <a href="index.php" class="<?= navAtivo('index.php', $pagina_admin) ?>"><i class="fa-solid fa-gauge"></i> Painel</a>
             <a href="produtos.php" class="<?= navAtivo('produtos.php', $pagina_admin) ?>"><i class="fa-solid fa-shirt"></i> Produtos</a>
+            <a href="categorias.php" class="<?= navAtivo('categorias.php', $pagina_admin) ?>"><i class="fa-solid fa-bars"></i> Categorias (Navbar)</a>
             <a href="encomendas.php" class="<?= navAtivo('encomendas.php', $pagina_admin) ?>"><i class="fa-solid fa-box"></i> Encomendas</a>
             <a href="devolucoes.php" class="<?= navAtivo('devolucoes.php', $pagina_admin) ?>">
                 <i class="fa-solid fa-rotate-left"></i> Devoluções

@@ -11,7 +11,8 @@ USE northside;
 CREATE TABLE IF NOT EXISTS categorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(60) NOT NULL,
-    slug VARCHAR(60) NOT NULL UNIQUE
+    slug VARCHAR(60) NOT NULL UNIQUE,
+    ordem INT NOT NULL DEFAULT 0
 ) ENGINE=InnoDB;
 
 -- ===== Produtos =====
@@ -157,12 +158,12 @@ CREATE TABLE IF NOT EXISTS admins (
 -- Dados iniciais
 -- ============================================
 
-INSERT INTO categorias (nome, slug) VALUES
-('Eletrónicos', 'eletronicos'),
-('Casa', 'casa'),
-('Acessórios', 'acessorios'),
-('Estilo', 'estilo'),
-('Desporto', 'desporto');
+INSERT INTO categorias (nome, slug, ordem) VALUES
+('Eletrónicos', 'eletronicos', 1),
+('Casa', 'casa', 2),
+('Acessórios', 'acessorios', 3),
+('Estilo', 'estilo', 4),
+('Desporto', 'desporto', 5);
 
 INSERT INTO produtos (nome, descricao, preco, imagem, categoria_id, stock, destaque, estrelas_media, num_avaliacoes, especificacoes) VALUES
 ('Auriculares Sem Fios Pro', 'Auriculares bluetooth com cancelamento de ruído ativo, até 24h de autonomia com a caixa de carregamento.', 24.99, 'sem-imagem.jpg', 1, 15, 1, 5.0, 128,
