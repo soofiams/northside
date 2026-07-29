@@ -116,3 +116,72 @@ function construirEmailConfirmacaoHtml(array $encomenda): string {
         </div>
     </div>';
 }
+
+/**
+ * Envia o código de desconto de boas-vindas a quem subscreve a newsletter.
+ * Usa a mesma lógica de envio (PHPMailer via SMTP, com recurso a mail() nativo).
+ */
+function enviarEmailCodigoDesconto(string $email, string $codigo, float $percentagem, string $validade): bool {
+    $percentagemTexto = round($percentagem * 100) . '%';
+    $validadeTexto = date('d/m/Y', strtotime($validade));
+    $assunto = 'O teu código de -' . $percentagemTexto . ' na Northside 🎉';
+
+    $corpoHtml = '
+    <div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;color:#1a1a1a;">
+        <div style="background:#16234a;padding:24px;text-align:center;">
+            <span style="color:#fff;font-size:1.4rem;font-weight:bold;letter-spacing:2px;">NORTHSIDE</span>
+        </div>
+        <div style="padding:32px 28px;text-align:center;">
+            <h2 style="color:#16234a;margin-top:0;">Bem-vindo(a) à Northside!</h2>
+            <p style="color:#4a5568;">Aqui está o teu código de desconto exclusivo, só para ti:</p>
+
+            <div style="background:#f5f6f8;border:2px dashed #16234a;border-radius:10px;padding:20px;margin:20px 0;">
+                <div style="font-size:1.6rem;font-weight:800;letter-spacing:2px;color:#16234a;">' . htmlspecialchars($codigo) . '</div>
+                <div style="font-size:0.85rem;color:#4a5568;margin-top:6px;">-' . $percentagemTexto . ' na tua próxima compra</div>
+            </div>
+
+            <p style="font-size:0.82rem;color:#9aa5cc;">
+                Válido até ' . $validadeTexto . '. Este código é de uso único e está associado a este email —
+                usa-o no campo "Código de desconto" ao finalizares a tua compra.
+            </p>
+
+            <p style="margin-top:28px;font-size:0.85rem;color:#9aa5cc;">Northside — Nascido no Porto, feito para o mundo.</p>
+        </div>
+    </div>';
+
+    $caminhoAutoload = __DIR__ . '/../vendor/autoload.php';
+
+    if (file_exists($caminhoAutoload)) {
+        require_once $caminhoAutoload;
+        try {
+            $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_UTILIZADOR;
+            $mail->Password = SMTP_PASSWORD;
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = SMTP_PORT;
+            $mail->CharSet = 'UTF-8';
+
+            $mail->setFrom(SMTP_UTILIZADOR, SMTP_NOME_REMETENTE);
+            $mail->addAddress($email);
+
+            $mail->isHTML(true);
+            $mail->Subject = $assunto;
+            $mail->Body = $corpoHtml;
+            $mail->AltBody = 'O teu código Northside: ' . $codigo . ' (-' . $percentagemTexto . '). Válido até ' . $validadeTexto . '.';
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log('Falha ao enviar código de desconto (PHPMailer): ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    $cabecalhos = "MIME-Version: 1.0\r\n";
+    $cabecalhos .= "Content-type: text/html; charset=UTF-8\r\n";
+    $cabecalhos .= "From: " . SMTP_NOME_REMETENTE . " <" . SMTP_UTILIZADOR . ">\r\n";
+    return @mail($email, $assunto, $corpoHtml, $cabecalhos);
+}

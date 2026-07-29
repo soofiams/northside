@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'contacto_telefone' => trim($_POST['contacto_telefone'] ?? ''),
         'envio_gratis_acima_de' => (string)(float)str_replace(',', '.', $_POST['envio_gratis_acima_de'] ?? '0'),
         'envio_custo' => (string)(float)str_replace(',', '.', $_POST['envio_custo'] ?? '0'),
+        'newsletter_desconto_percentagem' => (string)((float)str_replace(',', '.', $_POST['newsletter_desconto_percentagem'] ?? '10') / 100),
         'rede_instagram' => trim($_POST['rede_instagram'] ?? ''),
         'rede_facebook' => trim($_POST['rede_facebook'] ?? ''),
         'rede_tiktok' => trim($_POST['rede_tiktok'] ?? ''),
@@ -26,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $contactoEmail = buscarDefinicao($pdo, 'contacto_email', 'apoio@northside.pt');
 $contactoTelefone = buscarDefinicao($pdo, 'contacto_telefone', '+351 900 000 000');
 $custosEnvio = buscarCustosEnvio($pdo);
+$newsletterPercentagem = round((float)buscarDefinicao($pdo, 'newsletter_desconto_percentagem', '0.10') * 100);
 $redeInstagram = buscarDefinicao($pdo, 'rede_instagram', '');
 $redeFacebook = buscarDefinicao($pdo, 'rede_facebook', '');
 $redeTiktok = buscarDefinicao($pdo, 'rede_tiktok', '');
@@ -54,6 +56,11 @@ require __DIR__ . '/includes/admin_header.php';
 
         <label>Custo de envio (€)</label>
         <input type="text" name="envio_custo" required value="<?= htmlspecialchars($custosEnvio['custo']) ?>">
+
+        <h2 style="margin-top:28px;">Newsletter</h2>
+        <label>Desconto de boas-vindas (%)</label>
+        <input type="text" name="newsletter_desconto_percentagem" required value="<?= $newsletterPercentagem ?>">
+        <span class="campo-ajuda">Percentagem do código enviado automaticamente a quem subscreve a newsletter pela primeira vez.</span>
 
         <h2 style="margin-top:28px;">Redes sociais</h2>
         <p class="campo-ajuda" style="margin-bottom:8px;">Os links dos ícones no rodapé do site.</p>

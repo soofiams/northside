@@ -169,6 +169,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const dados = new FormData();
                 dados.append('codigo', codigo);
+                const campoEmail = document.getElementById('checkout-email');
+                if (campoEmail && campoEmail.value.trim()) dados.append('email', campoEmail.value.trim());
 
                 fetch('actions/aplicar_desconto.php', { method: 'POST', body: dados })
                     .then(function (r) { return r.json(); })

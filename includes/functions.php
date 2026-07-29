@@ -260,7 +260,7 @@ function carrinhoTotalValor(array $itens): float {
 // Códigos de desconto
 // ============================================
 
-function validarCodigoDesconto(PDO $pdo, string $codigo): ?array {
+function validarCodigoDesconto(PDO $pdo, string $codigo, ?string $email = null): ?array {
     $codigo = mb_strtoupper(trim($codigo));
     if ($codigo === '') return null;
 
@@ -270,7 +270,46 @@ function validarCodigoDesconto(PDO $pdo, string $codigo): ?array {
     );
     $stmt->execute(['codigo' => $codigo]);
     $resultado = $stmt->fetch();
-    return $resultado ?: null;
+    if (!$resultado) return null;
+
+    // código de uso único: tem de ainda não ter sido usado
+    if ($resultado['uso_unico'] && $resultado['usado']) return null;
+
+    // código ligado a um email específico: só esse email o pode usar
+    if (!empty($resultado['email_associado']) && $email !== null) {
+        if (mb_strtolower(trim($email)) !== mb_strtolower(trim($resultado['email_associado']))) return null;
+    }
+
+    return $resultado;
+}
+
+// Gera um código de desconto único e aleatório (ex: BEMVINDO-A4F9K2), garantindo que não existe já.
+function gerarCodigoDescontoUnico(PDO $pdo, string $prefixo = 'BEMVINDO'): string {
+    $caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sem 0/O/1/I, para evitar confusões
+    do {
+        $sufixo = '';
+        for ($i = 0; $i < 6; $i++) $sufixo .= $caracteres[random_int(0, strlen($caracteres) - 1)];
+        $codigo = $prefixo . '-' . $sufixo;
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM codigos_desconto WHERE codigo = ?");
+        $stmt->execute([$codigo]);
+    } while ($stmt->fetchColumn() > 0);
+    return $codigo;
+}
+
+// Cria um código de desconto de boas-vindas, único, ligado a um email, com a
+// percentagem definida em Backoffice → Definições. Devolve o código e a percentagem.
+function criarCodigoDescontoNewsletter(PDO $pdo, string $email): array {
+    $percentagem = (float)buscarDefinicao($pdo, 'newsletter_desconto_percentagem', '0.10');
+    $codigo = gerarCodigoDescontoUnico($pdo, 'BEMVINDO');
+    $validade = date('Y-m-d', strtotime('+60 days'));
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO codigos_desconto (codigo, percentagem, ativo, validade, uso_unico, email_associado)
+         VALUES (?, ?, 1, ?, 1, ?)"
+    );
+    $stmt->execute([$codigo, $percentagem, $validade, $email]);
+
+    return ['codigo' => $codigo, 'percentagem' => $percentagem, 'validade' => $validade];
 }
 
 // ============================================
@@ -335,6 +374,12 @@ function criarEncomenda(PDO $pdo, array $dadosCliente, array $itensCarrinho, ?ar
             } else {
                 $stmtStockProduto->execute(['qtd' => $item['quantidade'], 'id' => $item['produto']['id']]);
             }
+        }
+
+        // se o código usado era de uso único, marcá-lo como gasto (não pode voltar a ser usado)
+        if ($codigoDesconto && !empty($codigoDesconto['uso_unico'])) {
+            $pdo->prepare("UPDATE codigos_desconto SET usado = 1, usado_em = NOW() WHERE id = ?")
+                ->execute([$codigoDesconto['id']]);
         }
 
         $pdo->commit();

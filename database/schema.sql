@@ -69,6 +69,10 @@ CREATE TABLE IF NOT EXISTS codigos_desconto (
     percentagem DECIMAL(4,2) NOT NULL COMMENT 'ex: 0.10 = 10%',
     ativo TINYINT(1) NOT NULL DEFAULT 1,
     validade DATE NULL,
+    uso_unico TINYINT(1) NOT NULL DEFAULT 0,
+    usado TINYINT(1) NOT NULL DEFAULT 0,
+    usado_em TIMESTAMP NULL,
+    email_associado VARCHAR(150) NULL COMMENT 'se definido, só este email pode usar o código',
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -218,6 +222,7 @@ INSERT INTO definicoes (chave, valor) VALUES
 ('envio_custo', '4.99'),
 ('rede_instagram', 'https://instagram.com/northside'),
 ('rede_facebook', 'https://facebook.com/northside'),
-('rede_tiktok', 'https://tiktok.com/@northside');
+('rede_tiktok', 'https://tiktok.com/@northside'),
+('newsletter_desconto_percentagem', '0.10');
 
 -- Nota: a conta de administrador é criada mais tarde através de admin/setup.php (fase do backoffice)

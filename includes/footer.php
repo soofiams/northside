@@ -40,7 +40,7 @@
     <div class="modal-overlay" id="modal-newsletter">
         <div class="modal-caixa">
             <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
-            <div class="badge-desconto">-10% NA 1ª COMPRA</div>
+            <div class="badge-desconto">-<?= round((float)buscarDefinicao($pdo, 'newsletter_desconto_percentagem', '0.10') * 100) ?>% NA 1ª COMPRA</div>
             <h3>Junta-te à Northside</h3>
             <p>Subscreve a nossa newsletter e recebe já o teu código de desconto por email.</p>
             <form class="form-newsletter-modal" id="form-newsletter-modal" action="<?= URL_BASE ?>actions/newsletter_subscrever.php" method="post">

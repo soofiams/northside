@@ -52,14 +52,23 @@ require __DIR__ . '/includes/admin_header.php';
 
     <div class="admin-painel">
         <h2>Códigos ativos</h2>
+        <p class="campo-ajuda" style="margin-bottom:16px;">Os códigos "BEMVINDO-XXXXXX" são gerados automaticamente quando alguém subscreve a newsletter pela primeira vez.</p>
         <div class="admin-tabela-scroll">
 <table class="admin-tabela">
-            <thead><tr><th>Código</th><th>Desconto</th><th>Validade</th><th>Estado</th><th></th></tr></thead>
+            <thead><tr><th>Código</th><th>Desconto</th><th>Tipo</th><th>Email</th><th>Validade</th><th>Estado</th><th></th></tr></thead>
             <tbody>
                 <?php foreach ($codigos as $c): ?>
                     <tr>
                         <td><strong><?= htmlspecialchars($c['codigo']) ?></strong></td>
                         <td><?= round($c['percentagem'] * 100) ?>%</td>
+                        <td>
+                            <?php if ($c['uso_unico']): ?>
+                                <span class="pill <?= $c['usado'] ? 'pill-neutro' : 'pill-alerta' ?>"><?= $c['usado'] ? 'Uso único · usado' : 'Uso único · por usar' ?></span>
+                            <?php else: ?>
+                                <span class="pill pill-ok">Reutilizável</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= $c['email_associado'] ? htmlspecialchars($c['email_associado']) : '—' ?></td>
                         <td><?= $c['validade'] ? date('d/m/Y', strtotime($c['validade'])) : '— sem validade —' ?></td>
                         <td><span class="pill <?= $c['ativo'] ? 'pill-ok' : 'pill-neutro' ?>"><?= $c['ativo'] ? 'Ativo' : 'Inativo' ?></span></td>
                         <td class="admin-acoes">
@@ -72,7 +81,7 @@ require __DIR__ . '/includes/admin_header.php';
                     </tr>
                 <?php endforeach; ?>
                 <?php if (empty($codigos)): ?>
-                    <tr><td colspan="5" style="text-align:center;color:var(--cinza-texto);padding:24px;">Ainda não tens códigos.</td></tr>
+                    <tr><td colspan="7" style="text-align:center;color:var(--cinza-texto);padding:24px;">Ainda não tens códigos.</td></tr>
                 <?php endif; ?>
             </tbody>
         </table>

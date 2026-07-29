@@ -36,7 +36,7 @@ if (empty($itens)) {
 // --- Código de desconto (revalidado no servidor, nunca confiar só no que veio do ecrã) ---
 $codigoDesconto = null;
 if ($codigo_desconto_texto !== '') {
-    $codigoDesconto = validarCodigoDesconto($pdo, $codigo_desconto_texto);
+    $codigoDesconto = validarCodigoDesconto($pdo, $codigo_desconto_texto, $email);
 }
 
 // --- Criar a encomenda ---
