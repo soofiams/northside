@@ -29,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$existeAdmin) {
 <head>
 <meta charset="UTF-8">
 <title>Configuração inicial — Northside Admin</title>
-<link rel="stylesheet" href="../assets/css/style.css">
-<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="stylesheet" href="../assets/css/style.css?v=<?= @filemtime(__DIR__ . '/../assets/css/style.css') ?: time() ?>">
+<link rel="stylesheet" href="../assets/css/admin.css?v=<?= @filemtime(__DIR__ . '/../assets/css/admin.css') ?: time() ?>">
 </head>
 <body>
 <div class="admin-login-wrap">
