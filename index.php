@@ -35,7 +35,6 @@ require __DIR__ . '/includes/header.php';
         <span>Subscreve a nossa newsletter e recebe já o código de desconto.</span>
     </div>
     <div class="newsletter-faixa-form">
-        <input type="email" placeholder="O teu email" id="newsletter-faixa-email">
         <button type="button" data-abrir-modal="modal-newsletter">Subscrever</button>
     </div>
 </div>
@@ -52,7 +51,9 @@ require __DIR__ . '/includes/header.php';
             </a>
             <div class="corpo">
                 <div class="categoria-label"><?= htmlspecialchars(mb_strtoupper($produto['categoria_nome'] ?? '')) ?></div>
-                <a href="produto.php?id=<?= $produto['id'] ?>"><h3><?= htmlspecialchars($produto['nome']) ?></h3></a>
+                <a href="produto.php?id=<?= $produto['id'] ?>">
+                    <h3><?= htmlspecialchars($produto['nome']) ?></h3>
+                </a>
                 <div class="estrelas"><?= estrelasHtml($produto['estrelas_media']) ?> <span class="num">(<?= (int)$produto['num_avaliacoes'] ?>)</span></div>
                 <div class="linha-preco">
                     <span class="preco"><?= formatarPreco($produto['preco']) ?></span>

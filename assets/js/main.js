@@ -194,6 +194,31 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
+        // Ecrã de simulação de pagamento (fictício) — mostra por instantes antes de confirmar
+        function mostrarSimulacaoPagamento(metodo) {
+            const modalPagamento = document.getElementById('modal-pagamento-simulado');
+            const icone = document.getElementById('pagamento-metodo-icone');
+            const titulo = document.getElementById('pagamento-metodo-titulo');
+
+            const ICONES_METODO = {
+                'MB WAY': 'fa-solid fa-mobile-screen-button',
+                'Klarna': 'fa-solid fa-clock',
+                'Apple Pay': 'fa-brands fa-apple-pay',
+                'Google Pay': 'fa-brands fa-google-pay',
+            };
+            icone.innerHTML = '<i class="' + (ICONES_METODO[metodo] || 'fa-solid fa-credit-card') + '"></i>';
+            titulo.textContent = 'A processar com ' + metodo + '...';
+
+            modalPagamento.classList.add('aberto');
+
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    modalPagamento.classList.remove('aberto');
+                    resolve();
+                }, 1800);
+            });
+        }
+
         formCheckout.addEventListener('submit', function (e) {
             e.preventDefault();
             const confirmacaoCheckout = document.getElementById('checkout-confirmacao');
@@ -202,8 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
             btnSubmit.textContent = 'A confirmar...';
 
             const dados = new FormData(formCheckout);
+            const metodoEscolhido = dados.get('pagamento') || 'MB WAY';
 
-            fetch(formCheckout.action, { method: 'POST', body: dados })
+            mostrarSimulacaoPagamento(metodoEscolhido).then(function () {
+                fetch(formCheckout.action, { method: 'POST', body: dados })
                 .then(function (r) { return r.json(); })
                 .then(function (resposta) {
                     if (resposta.sucesso) {
@@ -238,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     btnSubmit.textContent = 'CONFIRMAR ENCOMENDA';
                     alert('Não foi possível ligar ao servidor. Tenta novamente.');
                 });
+            });
         });
     }
 

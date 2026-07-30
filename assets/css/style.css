@@ -679,6 +679,46 @@ a { text-decoration: none; color: inherit; }
 }
 #checkout-confirmacao { text-align: center; }
 
+/* ===== Simulação do ecrã de pagamento (fictício) ===== */
+.modal-pagamento-caixa { text-align: center; padding-top: 36px; }
+.pagamento-selo-teste {
+    display: inline-block;
+    background: #fff4e0;
+    color: #b0730a;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+}
+.pagamento-metodo-icone {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: #f0eeff;
+    color: #635bff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.7rem;
+    margin: 0 auto 16px;
+}
+.modal-pagamento-caixa h3 { color: var(--azul-northside); margin: 0 0 6px; }
+.pagamento-texto-ajuda { color: var(--cinza-texto); font-size: 0.82rem; margin: 0 0 24px; }
+.spinner-pagamento {
+    width: 34px; height: 34px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #635bff;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    animation: girar-pagamento 0.8s linear infinite;
+}
+@keyframes girar-pagamento { to { transform: rotate(360deg); } }
+.pagamento-rodape-stripe {
+    font-size: 0.72rem;
+    color: var(--cinza-texto);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.pagamento-rodape-stripe i { color: #635bff; font-size: 1rem; }
+
 /* ===== Alertas ===== */
 .alerta {
     max-width: 900px; margin: 16px auto; padding: 14px 20px; border-radius: 6px;

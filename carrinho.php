@@ -138,6 +138,26 @@ require __DIR__ . '/includes/header.php';
     </div>
 </div>
 
+<!-- Modal: simulação do ecrã de pagamento (fictício, só para pré-visualizar a experiência) -->
+<div class="modal-overlay" id="modal-pagamento-simulado">
+    <div class="modal-caixa modal-pagamento-caixa">
+        <div class="pagamento-selo-teste">MODO DE TESTE — sem cobrança real</div>
+
+        <div class="pagamento-metodo-icone" id="pagamento-metodo-icone">
+            <i class="fa-solid fa-mobile-screen-button"></i>
+        </div>
+
+        <h3 id="pagamento-metodo-titulo">A processar com MB WAY...</h3>
+        <p class="pagamento-texto-ajuda">Não feches esta janela.</p>
+
+        <div class="spinner-pagamento"></div>
+
+        <div class="pagamento-rodape-stripe">
+            <i class="fa-brands fa-stripe"></i> Processado com segurança
+        </div>
+    </div>
+</div>
+
 <?php endif; ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
