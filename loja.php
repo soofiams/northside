@@ -29,6 +29,7 @@ require __DIR__ . '/includes/header.php';
         <span>Subscreve a nossa newsletter e recebe já o código de desconto.</span>
     </div>
     <div class="newsletter-faixa-form">
+        <input type="email" placeholder="O teu email" id="newsletter-faixa-email-loja">
         <button type="button" data-abrir-modal="modal-newsletter">Subscrever</button>
     </div>
 </div>
@@ -41,36 +42,34 @@ require __DIR__ . '/includes/header.php';
         <a href="loja.php" class="btn-northside">VER TODOS OS PRODUTOS</a>
     </div>
 <?php else: ?>
-    <div class="grid-produtos" id="grid-loja">
-        <?php foreach ($produtos as $produto): $stock = (int)$produto['stock']; ?>
-            <div class="cartao-produto">
-                <a href="produto.php?id=<?= $produto['id'] ?>">
-                    <div class="img-wrap">
-                        <img class="img-ativa" src="<?= imagemProdutoUrl($produto['imagem']) ?>" alt="<?= htmlspecialchars($produto['nome']) ?>">
-                    </div>
-                </a>
-                <div class="corpo">
-                    <div class="categoria-label"><?= htmlspecialchars(mb_strtoupper($produto['categoria_nome'] ?? '')) ?></div>
-                    <a href="produto.php?id=<?= $produto['id'] ?>">
-                        <h3><?= htmlspecialchars($produto['nome']) ?></h3>
-                    </a>
-                    <div class="estrelas"><?= estrelasHtml($produto['estrelas_media']) ?> <span class="num">(<?= (int)$produto['num_avaliacoes'] ?>)</span></div>
-                    <div class="linha-preco">
-                        <span class="preco"><?= formatarPreco($produto['preco']) ?></span>
-                        <?php if ($stock > 0): ?>
-                            <form action="actions/carrinho_add.php" method="post">
-                                <input type="hidden" name="produto_id" value="<?= $produto['id'] ?>">
-                                <input type="hidden" name="voltar" value="loja.php<?= !empty($_SERVER['QUERY_STRING']) ? '?' . htmlspecialchars($_SERVER['QUERY_STRING']) : '' ?>">
-                                <button type="submit" class="btn-add-cart" title="Adicionar ao carrinho">+</button>
-                            </form>
-                        <?php else: ?>
-                            <span class="rotulo-esgotado">ESGOTADO</span>
-                        <?php endif; ?>
-                    </div>
+<div class="grid-produtos" id="grid-loja">
+    <?php foreach ($produtos as $produto): $stock = (int)$produto['stock']; ?>
+        <div class="cartao-produto">
+            <a href="produto.php?id=<?= $produto['id'] ?>">
+                <div class="img-wrap">
+                    <img class="img-ativa" src="<?= imagemProdutoUrl($produto['imagem']) ?>" alt="<?= htmlspecialchars($produto['nome']) ?>">
+                </div>
+            </a>
+            <div class="corpo">
+                <div class="categoria-label"><?= htmlspecialchars(mb_strtoupper($produto['categoria_nome'] ?? '')) ?></div>
+                <a href="produto.php?id=<?= $produto['id'] ?>"><h3><?= htmlspecialchars($produto['nome']) ?></h3></a>
+                <div class="estrelas"><?= estrelasHtml($produto['estrelas_media']) ?> <span class="num">(<?= (int)$produto['num_avaliacoes'] ?>)</span></div>
+                <div class="linha-preco">
+                    <span class="preco"><?= formatarPreco($produto['preco']) ?></span>
+                    <?php if ($stock > 0): ?>
+                        <form action="actions/carrinho_add.php" method="post">
+                            <input type="hidden" name="produto_id" value="<?= $produto['id'] ?>">
+                            <input type="hidden" name="voltar" value="loja.php<?= !empty($_SERVER['QUERY_STRING']) ? '?' . htmlspecialchars($_SERVER['QUERY_STRING']) : '' ?>">
+                            <button type="submit" class="btn-add-cart" title="Adicionar ao carrinho">+</button>
+                        </form>
+                    <?php else: ?>
+                        <span class="rotulo-esgotado">ESGOTADO</span>
+                    <?php endif; ?>
                 </div>
             </div>
-        <?php endforeach; ?>
-    </div>
+        </div>
+    <?php endforeach; ?>
+</div>
 <?php endif; ?>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -57,6 +57,7 @@ function navAtivo(string $ficheiro, string $atual): string {
                 <?php if ($mensagensNaoLidas > 0): ?><span class="badge-contagem"><?= $mensagensNaoLidas ?></span><?php endif; ?>
             </a>
             <a href="definicoes.php" class="<?= navAtivo('definicoes.php', $pagina_admin) ?>"><i class="fa-solid fa-gear"></i> Definições</a>
+            <a href="administradores.php" class="<?= navAtivo('administradores.php', $pagina_admin) ?>"><i class="fa-solid fa-user-shield"></i> Administradores</a>
         </nav>
 
         <div class="admin-sair">
