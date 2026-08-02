@@ -516,10 +516,20 @@ document.addEventListener('DOMContentLoaded', function () {
             intervaloPolling = setInterval(irBuscarMensagensNovas, 4000);
         }
 
-        chatBotao.addEventListener('click', function () {
+        function abrirChat() {
             chatPainel.classList.add('aberto');
             if (conversaId) mostrarConversa();
-        });
+        }
+
+        chatBotao.addEventListener('click', abrirChat);
+
+        const linkAjuda = document.getElementById('link-ajuda-chat');
+        if (linkAjuda) {
+            linkAjuda.addEventListener('click', function (e) {
+                e.preventDefault();
+                abrirChat();
+            });
+        }
 
         document.getElementById('chat-fechar').addEventListener('click', function () {
             chatPainel.classList.remove('aberto');

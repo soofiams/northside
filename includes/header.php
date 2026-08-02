@@ -21,7 +21,7 @@ $total_carrinho = carrinhoTotalItens();
         <span>ENVIO GRÁTIS EM TODAS AS ENCOMENDAS ACIMA DE <?= (int)buscarCustosEnvio($pdo)['gratis_acima_de'] ?>€</span>
         <div>
             <a href="#" data-abrir-modal="modal-sobre">Sobre Nós</a>
-            <a href="#">Ajuda</a>
+            <a href="#" id="link-ajuda-chat">Ajuda</a>
         </div>
     </div>
 </div>
