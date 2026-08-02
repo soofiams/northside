@@ -18,7 +18,7 @@ require __DIR__ . '/includes/header.php';
 <section class="hero">
     <div class="hero-texto">
         <h1>Your Powered Life.</h1>
-        <a href="loja.php" class="btn-northside" style="margin-top:18px;display:inline-block;">DESCOBRIR A NORTHSIDE</a>
+        <a href="loja.php" class="btn-northside" style="margin-top:18px;display:inline-block;">DESCOBRIR A NORTH</a>
     </div>
 </section>
 
