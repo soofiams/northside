@@ -194,78 +194,44 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Ecrã de simulação de pagamento (fictício) — mostra por instantes antes de confirmar
-        function mostrarSimulacaoPagamento(metodo) {
+        // Ecrã de transição, mostrado enquanto se prepara o pagamento na Stripe
+        function mostrarEcraTransicaoPagamento() {
             const modalPagamento = document.getElementById('modal-pagamento-simulado');
-            const icone = document.getElementById('pagamento-metodo-icone');
-            const titulo = document.getElementById('pagamento-metodo-titulo');
-
-            const ICONES_METODO = {
-                'MB WAY': 'fa-solid fa-mobile-screen-button',
-                'Klarna': 'fa-solid fa-clock',
-                'Apple Pay': 'fa-brands fa-apple-pay',
-                'Google Pay': 'fa-brands fa-google-pay',
-            };
-            icone.innerHTML = '<i class="' + (ICONES_METODO[metodo] || 'fa-solid fa-credit-card') + '"></i>';
-            titulo.textContent = 'A processar com ' + metodo + '...';
-
             modalPagamento.classList.add('aberto');
-
-            return new Promise(function (resolve) {
-                setTimeout(function () {
-                    modalPagamento.classList.remove('aberto');
-                    resolve();
-                }, 1800);
-            });
+        }
+        function esconderEcraTransicaoPagamento() {
+            document.getElementById('modal-pagamento-simulado').classList.remove('aberto');
         }
 
         formCheckout.addEventListener('submit', function (e) {
             e.preventDefault();
-            const confirmacaoCheckout = document.getElementById('checkout-confirmacao');
             const btnSubmit = formCheckout.querySelector('button[type="submit"]');
             btnSubmit.disabled = true;
-            btnSubmit.textContent = 'A confirmar...';
+            btnSubmit.textContent = 'A preparar...';
 
             const dados = new FormData(formCheckout);
-            const metodoEscolhido = dados.get('pagamento') || 'MB WAY';
 
-            mostrarSimulacaoPagamento(metodoEscolhido).then(function () {
-                fetch(formCheckout.action, { method: 'POST', body: dados })
+            mostrarEcraTransicaoPagamento();
+
+            fetch(formCheckout.action, { method: 'POST', body: dados })
                 .then(function (r) { return r.json(); })
                 .then(function (resposta) {
-                    if (resposta.sucesso) {
-                        formCheckout.style.display = 'none';
-
-                        let linksAvaliar = '';
-                        if (resposta.produtos && resposta.produtos.length > 0) {
-                            linksAvaliar = '<p style="margin:16px 0 8px;font-weight:700;color:var(--azul-northside);">Avalia os teus produtos:</p>';
-                            resposta.produtos.forEach(function (p) {
-                                linksAvaliar += '<a href="produto.php?id=' + p.id + '#avaliar" class="btn-outline-northside" style="margin:3px;padding:7px 14px;font-size:0.75rem;display:inline-block;">' + p.nome + '</a>';
-                            });
-                        }
-
-                        confirmacaoCheckout.innerHTML =
-                            '✓ Encomenda #' + String(resposta.encomenda_id).padStart(5, '0') + ' confirmada!<br>' +
-                            'Obrigado pela tua compra — total: ' + resposta.total + '<br><br>' +
-                            (resposta.email_enviado
-                                ? '📧 Enviámos um email de confirmação para <strong>' + resposta.email + '</strong>.'
-                                : '⚠️ A encomenda foi registada, mas não foi possível enviar o email de confirmação (verifica as definições SMTP em config.php).') +
-                            linksAvaliar +
-                            '<div style="margin-top:16px;"><a href="loja.php" class="btn-northside" style="display:inline-block;">CONTINUAR A COMPRAR</a> ' +
-                            '<a href="encomenda.php" class="btn-outline-northside" style="display:inline-block;">ACOMPANHAR ENCOMENDA</a></div>';
-                        confirmacaoCheckout.style.display = 'block';
+                    if (resposta.sucesso && resposta.url) {
+                        // sucesso: sai da nossa página e vai para o checkout seguro da Stripe
+                        window.location.href = resposta.url;
                     } else {
+                        esconderEcraTransicaoPagamento();
                         btnSubmit.disabled = false;
-                        btnSubmit.textContent = 'CONFIRMAR ENCOMENDA';
-                        alert(resposta.erro || 'Não foi possível concluir a encomenda.');
+                        btnSubmit.textContent = 'IR PARA PAGAMENTO SEGURO';
+                        alert(resposta.erro || 'Não foi possível iniciar o pagamento.');
                     }
                 })
                 .catch(function () {
+                    esconderEcraTransicaoPagamento();
                     btnSubmit.disabled = false;
-                    btnSubmit.textContent = 'CONFIRMAR ENCOMENDA';
+                    btnSubmit.textContent = 'IR PARA PAGAMENTO SEGURO';
                     alert('Não foi possível ligar ao servidor. Tenta novamente.');
                 });
-            });
         });
     }
 

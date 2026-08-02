@@ -316,7 +316,7 @@ function criarCodigoDescontoNewsletter(PDO $pdo, string $email): array {
 // Encomendas
 // ============================================
 
-function criarEncomenda(PDO $pdo, array $dadosCliente, array $itensCarrinho, ?array $codigoDesconto): int {
+function criarEncomenda(PDO $pdo, array $dadosCliente, array $itensCarrinho, ?array $codigoDesconto, ?string $stripeSessionId = null): int {
     $subtotal = carrinhoTotalValor($itensCarrinho);
     $envio = calcularEnvio($pdo, $subtotal);
     $valorDesconto = $codigoDesconto ? round(($subtotal + $envio) * $codigoDesconto['percentagem'], 2) : 0;
@@ -326,8 +326,8 @@ function criarEncomenda(PDO $pdo, array $dadosCliente, array $itensCarrinho, ?ar
     try {
         $stmt = $pdo->prepare(
             "INSERT INTO encomendas
-             (nome_cliente, email, telefone, morada, codigo_postal, cidade, metodo_pagamento, codigo_desconto_id, subtotal, valor_desconto, envio, total)
-             VALUES (:nome, :email, :telefone, :morada, :codigo_postal, :cidade, :metodo_pagamento, :codigo_desconto_id, :subtotal, :valor_desconto, :envio, :total)"
+             (nome_cliente, email, telefone, morada, codigo_postal, cidade, metodo_pagamento, codigo_desconto_id, subtotal, valor_desconto, envio, total, stripe_session_id)
+             VALUES (:nome, :email, :telefone, :morada, :codigo_postal, :cidade, :metodo_pagamento, :codigo_desconto_id, :subtotal, :valor_desconto, :envio, :total, :stripe_session_id)"
         );
         $stmt->execute([
             'nome' => $dadosCliente['nome'],
@@ -342,6 +342,7 @@ function criarEncomenda(PDO $pdo, array $dadosCliente, array $itensCarrinho, ?ar
             'valor_desconto' => $valorDesconto,
             'envio' => $envio,
             'total' => $total,
+            'stripe_session_id' => $stripeSessionId,
         ]);
         $encomendaId = (int)$pdo->lastInsertId();
 
@@ -400,6 +401,13 @@ function buscarEncomendaCompleta(PDO $pdo, int $id): ?array {
     $stmtItens->execute(['id' => $id]);
     $encomenda['itens'] = $stmtItens->fetchAll();
     return $encomenda;
+}
+
+function buscarEncomendaPorStripeSession(PDO $pdo, string $sessionId): ?array {
+    $stmt = $pdo->prepare("SELECT id FROM encomendas WHERE stripe_session_id = ?");
+    $stmt->execute([$sessionId]);
+    $resultado = $stmt->fetch();
+    return $resultado ?: null;
 }
 
 function marcarEmailEnviado(PDO $pdo, int $encomendaId): void {

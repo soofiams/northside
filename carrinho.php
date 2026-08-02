@@ -84,7 +84,7 @@ require __DIR__ . '/includes/header.php';
         <button class="fechar-modal" data-fechar-modal aria-label="Fechar">✕</button>
         <h3>Finalizar Compra</h3>
 
-        <form id="form-checkout" class="checkout-form" action="actions/finalizar_compra.php" method="post"
+        <form id="form-checkout" class="checkout-form" action="actions/stripe_criar_sessao.php" method="post"
               data-subtotal="<?= $subtotal ?>" data-envio="<?= $envio ?>">
             <label for="checkout-nome">Nome completo</label>
             <input type="text" name="nome" id="checkout-nome" required>
@@ -123,32 +123,26 @@ require __DIR__ . '/includes/header.php';
                 <div class="linha-total"><span>Total</span><span><?= formatarPreco($subtotal + $envio) ?></span></div>
             </div>
 
-            <label>Método de pagamento</label>
-            <div class="checkout-pagamento-opcoes">
-                <label><input type="radio" name="pagamento" value="MB WAY" checked> MB WAY</label>
-                <label><input type="radio" name="pagamento" value="Klarna"> Klarna</label>
-                <label><input type="radio" name="pagamento" value="Apple Pay"> Apple Pay</label>
-                <label><input type="radio" name="pagamento" value="Google Pay"> Google Pay</label>
-            </div>
+            <p class="campo-ajuda" style="margin-top:16px;text-align:center;">
+                No próximo ecrã podes pagar com <strong>Apple Pay, Google Pay, MB WAY, Klarna</strong> ou cartão — em segurança, através da Stripe.
+            </p>
 
-            <button type="submit" class="btn-northside" style="width:100%;margin-top:20px;">CONFIRMAR ENCOMENDA</button>
+            <button type="submit" class="btn-northside" style="width:100%;margin-top:10px;">IR PARA PAGAMENTO SEGURO</button>
         </form>
 
         <div class="modal-confirmacao" id="checkout-confirmacao"></div>
     </div>
 </div>
 
-<!-- Modal: simulação do ecrã de pagamento (fictício, só para pré-visualizar a experiência) -->
+<!-- Modal: transição antes de seguir para o checkout da Stripe -->
 <div class="modal-overlay" id="modal-pagamento-simulado">
     <div class="modal-caixa modal-pagamento-caixa">
-        <div class="pagamento-selo-teste">MODO DE TESTE — sem cobrança real</div>
-
         <div class="pagamento-metodo-icone" id="pagamento-metodo-icone">
-            <i class="fa-solid fa-mobile-screen-button"></i>
+            <i class="fa-brands fa-stripe-s"></i>
         </div>
 
-        <h3 id="pagamento-metodo-titulo">A processar com MB WAY...</h3>
-        <p class="pagamento-texto-ajuda">Não feches esta janela.</p>
+        <h3 id="pagamento-metodo-titulo">A preparar o pagamento seguro...</h3>
+        <p class="pagamento-texto-ajuda">Vais ser redirecionado(a) para o checkout da Stripe.</p>
 
         <div class="spinner-pagamento"></div>
 

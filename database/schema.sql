@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS encomendas (
     total DECIMAL(10,2) NOT NULL,
     estado ENUM('pendente','confirmada','enviada','entregue','cancelada') NOT NULL DEFAULT 'confirmada',
     email_enviado TINYINT(1) NOT NULL DEFAULT 0,
+    stripe_session_id VARCHAR(255) NULL UNIQUE,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (codigo_desconto_id) REFERENCES codigos_desconto(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;

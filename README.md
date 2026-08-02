@@ -117,6 +117,35 @@ Depois, entra em `admin/login.php`. O painel tem:
 - **Chat** — responder às conversas dos clientes em tempo real (atualiza automaticamente a cada poucos segundos)
 - **Definições** — email e telemóvel de contacto, limiar de portes grátis, e custo de envio — os mesmos valores que já eram editáveis por SQL, agora com um formulário simples
 
+## Pagamentos com a Stripe (Apple Pay, Google Pay, MB WAY, Klarna)
+
+O checkout já está ligado à Stripe a sério — falta só a tua parte:
+
+### 1. Criar a conta Stripe
+Vai a [dashboard.stripe.com/register](https://dashboard.stripe.com/register) e cria a conta (podes começar em modo de teste, sem verificares o negócio já).
+
+### 2. Instalar a Stripe no projeto
+```bash
+cd /caminho/para/o/projeto
+composer require stripe/stripe-php
+```
+
+### 3. Copiar as chaves de teste
+Em [dashboard.stripe.com/test/apikeys](https://dashboard.stripe.com/test/apikeys), copia a **Publishable key** e a **Secret key**, e cola-as no `config.php`:
+```php
+define('STRIPE_CHAVE_PUBLICA', 'pk_test_...');
+define('STRIPE_CHAVE_SECRETA', 'sk_test_...');
+```
+
+### 4. Ativar os métodos de pagamento
+No painel da Stripe: **Definições → Métodos de pagamento** — ativa Cartão, Apple Pay, Google Pay, Klarna e MB WAY (para Portugal).
+
+### 5. Testar
+Corre `database/migracao_8.sql` no phpMyAdmin, faz uma compra de teste no site, e usa um [cartão de teste da Stripe](https://docs.stripe.com/testing) (ex: `4242 4242 4242 4242`, qualquer data futura, qualquer CVC) para simulares um pagamento aprovado, sem dinheiro real.
+
+### Quando estiveres pronta para receber pagamentos a sério
+Repete o passo 3, mas com as chaves que começam por `pk_live_` e `sk_live_` (têm de ativar a conta Stripe com os dados reais do negócio primeiro).
+
 ## Estrutura
 
 ```
